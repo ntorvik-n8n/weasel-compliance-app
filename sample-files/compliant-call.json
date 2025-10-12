@@ -1,0 +1,47 @@
+{
+  "callId": "CALL-2025-003",
+  "timestamp": "2025-10-10T11:00:00Z",
+  "duration": "00:04:15",
+  "agentId": "AGT-103",
+  "agentName": "Michael Brown",
+  "accountNumber": "ACC-24680",
+  "transcript": [
+    {
+      "speaker": "agent",
+      "timestamp": "2025-10-10T11:00:05Z",
+      "text": "Good morning, this is Michael from ABC Collections. May I speak with Mr. Anderson?"
+    },
+    {
+      "speaker": "customer",
+      "timestamp": "2025-10-10T11:00:12Z",
+      "text": "Yes, speaking."
+    },
+    {
+      "speaker": "agent",
+      "timestamp": "2025-10-10T11:00:20Z",
+      "text": "I'm calling to follow up on your payment plan for your credit card balance. According to our records, you agreed to pay $200 monthly."
+    },
+    {
+      "speaker": "customer",
+      "timestamp": "2025-10-10T11:00:30Z",
+      "text": "Yes, and I've already sent this month's payment. It should be posted by tomorrow."
+    },
+    {
+      "speaker": "agent",
+      "timestamp": "2025-10-10T11:00:40Z",
+      "text": "Thank you for keeping up with your payments. I'll make a note that the payment is being processed. Is there anything else I can help you with?"
+    }
+  ],
+  "metadata": {
+    "callType": "outbound",
+    "accountBalance": 800.00,
+    "previousContacts": 3,
+    "callOutcome": "payment_confirmed",
+    "complianceScore": 98,
+    "paymentPlan": {
+      "monthlyAmount": 200.00,
+      "startDate": "2025-08-01",
+      "remainingPayments": 4
+    }
+  }
+}

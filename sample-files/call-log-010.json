@@ -1,0 +1,75 @@
+{
+  "callId": "CL-2025-010",
+  "timestamp": "2025-10-11T16:12:08Z",
+  "agent": {
+    "id": "AGT-1067",
+    "name": "Jonathan Lee"
+  },
+  "client": {
+    "id": "CLI-7788",
+    "name": "Thomas B."
+  },
+  "duration": 367,
+  "transcript": [
+    {
+      "timestamp": 0,
+      "speaker": "agent",
+      "text": "Hello, I'm trying to reach Thomas Bennett."
+    },
+    {
+      "timestamp": 4,
+      "speaker": "client",
+      "text": "This is Thomas."
+    },
+    {
+      "timestamp": 6,
+      "speaker": "agent",
+      "text": "Good afternoon Thomas, this is Jonathan Lee from United Recovery Services. I'm calling regarding a balance of $2,156 that's been assigned to our agency for collection. This is a formal debt collection call. Do you have a few minutes?"
+    },
+    {
+      "timestamp": 25,
+      "speaker": "client",
+      "text": "I think there's been a mistake. I don't recognize this debt."
+    },
+    {
+      "timestamp": 31,
+      "speaker": "agent",
+      "text": "I understand. That's actually not uncommon. This debt is from a retail credit card account. Within 5 days, you'll receive a written notice with all the details including the creditor's name, the amount, and your rights. You have 30 days from receiving that notice to dispute the debt in writing if you believe it's not valid."
+    },
+    {
+      "timestamp": 55,
+      "speaker": "client",
+      "text": "Okay, I'll wait for that notice then."
+    },
+    {
+      "timestamp": 59,
+      "speaker": "agent",
+      "text": "That's perfectly fine. The notice will have all the information you need. If after reviewing it you have questions or want to discuss payment options, my direct contact information will be included. Is this the best mailing address for you?"
+    },
+    {
+      "timestamp": 74,
+      "speaker": "client",
+      "text": "Yes, the address you have should be correct."
+    },
+    {
+      "timestamp": 78,
+      "speaker": "agent",
+      "text": "Great. You should receive it within 5 business days. If you don't receive it or have any questions, please don't hesitate to call. Is there anything else I can help clarify today?"
+    },
+    {
+      "timestamp": 90,
+      "speaker": "client",
+      "text": "No, I'll wait for the letter. Thank you."
+    },
+    {
+      "timestamp": 94,
+      "speaker": "agent",
+      "text": "You're welcome, Thomas. Have a good day."
+    }
+  ],
+  "outcome": "Validation notice to be sent - customer will review",
+  "metadata": {
+    "recordingId": "REC-010-2025",
+    "campaignId": "CAMP-RETAIL-2025"
+  }
+}

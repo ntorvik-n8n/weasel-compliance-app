@@ -1,0 +1,65 @@
+{
+  "callId": "CL-2025-003",
+  "timestamp": "2025-10-10T13:45:12Z",
+  "agent": {
+    "id": "AGT-3892",
+    "name": "David Park"
+  },
+  "client": {
+    "id": "CLI-9012",
+    "name": "Maria G."
+  },
+  "duration": 312,
+  "transcript": [
+    {
+      "timestamp": 0,
+      "speaker": "agent",
+      "text": "Good afternoon, may I speak with Maria Garcia?"
+    },
+    {
+      "timestamp": 5,
+      "speaker": "client",
+      "text": "Speaking."
+    },
+    {
+      "timestamp": 7,
+      "speaker": "agent",
+      "text": "Hi Maria, this is David Park from First National Collections. I'm calling about your medical bill from Central Hospital. Do you have a few minutes to discuss this?"
+    },
+    {
+      "timestamp": 20,
+      "speaker": "client",
+      "text": "Oh, yes. I've been meaning to call about that."
+    },
+    {
+      "timestamp": 25,
+      "speaker": "agent",
+      "text": "No problem at all. The outstanding balance is $1,345. I want to let you know that you have rights under the Fair Debt Collection Practices Act, and if you need written verification of this debt, I can send that to you."
+    },
+    {
+      "timestamp": 42,
+      "speaker": "client",
+      "text": "Thank you. I remember that bill. Can I set up a payment plan?"
+    },
+    {
+      "timestamp": 48,
+      "speaker": "agent",
+      "text": "Absolutely. We can work with you on that. What amount would be manageable for you each month?"
+    },
+    {
+      "timestamp": 56,
+      "speaker": "client",
+      "text": "Maybe $100 a month?"
+    },
+    {
+      "timestamp": 60,
+      "speaker": "agent",
+      "text": "That works perfectly. I'll set up a 14-month payment plan starting next month. You'll receive written confirmation within 5 business days."
+    }
+  ],
+  "outcome": "Payment plan established - $100/month",
+  "metadata": {
+    "recordingId": "REC-003-2025",
+    "campaignId": "CAMP-MED-2025"
+  }
+}

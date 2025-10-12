@@ -1,0 +1,42 @@
+{
+  "callId": "CALL-2025-002",
+  "timestamp": "2025-10-10T10:15:00Z",
+  "duration": "00:08:45",
+  "agentId": "AGT-102",
+  "agentName": "Sarah Wilson",
+  "accountNumber": "ACC-67890",
+  "transcript": [
+    {
+      "speaker": "agent",
+      "timestamp": "2025-10-10T10:15:05Z",
+      "text": "Hello, this is Sarah from ABC Collections calling for Mrs. Davis."
+    },
+    {
+      "speaker": "customer",
+      "timestamp": "2025-10-10T10:15:12Z",
+      "text": "This is Mrs. Davis, but I already told you people I can't pay right now!"
+    },
+    {
+      "speaker": "agent",
+      "timestamp": "2025-10-10T10:15:20Z",
+      "text": "I understand your frustration. You must pay this debt or we'll have no choice but to take further action!"
+    },
+    {
+      "speaker": "customer",
+      "timestamp": "2025-10-10T10:15:30Z",
+      "text": "Are you threatening me? I want to speak to your supervisor!"
+    },
+    {
+      "speaker": "agent",
+      "timestamp": "2025-10-10T10:15:40Z",
+      "text": "If you don't pay today, we'll garnish your wages. This is your final warning!"
+    }
+  ],
+  "metadata": {
+    "callType": "outbound",
+    "accountBalance": 1250.00,
+    "previousContacts": 5,
+    "callOutcome": "escalated",
+    "riskFlags": ["threatening_language", "immediate_payment_demand", "legal_action_threat"]
+  }
+}

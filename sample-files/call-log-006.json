@@ -1,0 +1,55 @@
+{
+  "callId": "CL-2025-006",
+  "timestamp": "2025-10-11T09:05:18Z",
+  "agent": {
+    "id": "AGT-6789",
+    "name": "Rachel Thompson"
+  },
+  "client": {
+    "id": "CLI-2341",
+    "name": "Daniel S."
+  },
+  "duration": 156,
+  "transcript": [
+    {
+      "timestamp": 0,
+      "speaker": "agent",
+      "text": "Daniel, we need to talk about your debt. You've been avoiding us."
+    },
+    {
+      "timestamp": 6,
+      "speaker": "client",
+      "text": "Who is this? How did you get this number?"
+    },
+    {
+      "timestamp": 10,
+      "speaker": "agent",
+      "text": "Don't worry about that. What you should worry about is the $4,500 you owe. We know where you work, where you live, where your kids go to school."
+    },
+    {
+      "timestamp": 23,
+      "speaker": "client",
+      "text": "Are you threatening my family? This is completely inappropriate!"
+    },
+    {
+      "timestamp": 28,
+      "speaker": "agent",
+      "text": "I'm just saying we have our ways of finding people. You can make this easy or hard. Your choice."
+    },
+    {
+      "timestamp": 37,
+      "speaker": "client",
+      "text": "I'm hanging up and calling a lawyer."
+    },
+    {
+      "timestamp": 40,
+      "speaker": "agent",
+      "text": "Go ahead. That'll just add legal fees to what you already owe. Smart move, genius."
+    }
+  ],
+  "outcome": "Customer disconnected - complaint likely",
+  "metadata": {
+    "recordingId": "REC-006-2025",
+    "campaignId": "CAMP-CC-2025"
+  }
+}

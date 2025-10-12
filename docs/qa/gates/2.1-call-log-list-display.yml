@@ -1,0 +1,38 @@
+# QA Gate Assessment for Story 2.1
+# Epic 2: Call Log Management System
+
+story_id: 2.1
+story_name: Call Log List Display with Metadata
+qa_agent: Quinn (Test Architect)
+assessment_date: 2025-10-11
+status: PASSED
+
+summary: >
+  All previously identified gaps have been successfully addressed. The file list
+  component is now fully interactive and meets accessibility standards. The
+  feature is considered complete and robust.
+
+findings:
+  - id: 2.1-F1
+    type: Functional Gap
+    severity: Medium
+    description: >
+      The `onClick` event on table rows was not implemented, preventing navigation
+      to the call log detail page.
+    status: FIXED
+
+  - id: 2.1-F2
+    type: Usability/Accessibility
+    severity: Low
+    description: >
+      The list lacked visual highlighting for the currently selected row and did not
+      support keyboard navigation.
+    status: FIXED
+
+  - id: 2.1-F3
+    type: Usability/Accessibility
+    severity: Low
+    description: >
+      The table was missing key ARIA attributes (`role`, `aria-selected`) which
+      hinders screen reader usability.
+    status: FIXED

@@ -1,0 +1,55 @@
+{
+  "callId": "CL-2025-002",
+  "timestamp": "2025-10-10T10:22:41Z",
+  "agent": {
+    "id": "AGT-2145",
+    "name": "Sarah Chen"
+  },
+  "client": {
+    "id": "CLI-7234",
+    "name": "Robert K."
+  },
+  "duration": 185,
+  "transcript": [
+    {
+      "timestamp": 0,
+      "speaker": "agent",
+      "text": "Hello, is this Robert?"
+    },
+    {
+      "timestamp": 3,
+      "speaker": "client",
+      "text": "Yeah, who's this?"
+    },
+    {
+      "timestamp": 5,
+      "speaker": "agent",
+      "text": "This is Sarah from Recovery Solutions. Look, you owe $5,200 and you need to pay this NOW. We're tired of your excuses."
+    },
+    {
+      "timestamp": 18,
+      "speaker": "client",
+      "text": "Wait, I don't understand what this is about."
+    },
+    {
+      "timestamp": 23,
+      "speaker": "agent",
+      "text": "Don't play dumb with me. If you don't pay today, we're going to garnish your wages and take everything you own. You'll lose your house!"
+    },
+    {
+      "timestamp": 35,
+      "speaker": "client",
+      "text": "This doesn't sound right. I need more information."
+    },
+    {
+      "timestamp": 40,
+      "speaker": "agent",
+      "text": "You're just trying to dodge your responsibilities. Pay up or face the consequences. We can make your life very difficult."
+    }
+  ],
+  "outcome": "Customer hung up - no resolution",
+  "metadata": {
+    "recordingId": "REC-002-2025",
+    "campaignId": "CAMP-MED-2025"
+  }
+}

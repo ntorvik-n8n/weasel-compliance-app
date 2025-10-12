@@ -1,0 +1,75 @@
+{
+  "callId": "CL-2025-008",
+  "timestamp": "2025-10-11T13:20:44Z",
+  "agent": {
+    "id": "AGT-8934",
+    "name": "Brandon Miller"
+  },
+  "client": {
+    "id": "CLI-6789",
+    "name": "Steven R."
+  },
+  "duration": 523,
+  "transcript": [
+    {
+      "timestamp": 0,
+      "speaker": "agent",
+      "text": "Good afternoon, I'm calling for Steven Rogers."
+    },
+    {
+      "timestamp": 4,
+      "speaker": "client",
+      "text": "Speaking."
+    },
+    {
+      "timestamp": 6,
+      "speaker": "agent",
+      "text": "Hi Steven, this is Brandon Miller from Capital Collections Group. I'm reaching out regarding an account with a balance of $6,234. This is an attempt to collect a debt. Before we proceed, I need to inform you of your rights under federal law."
+    },
+    {
+      "timestamp": 26,
+      "speaker": "client",
+      "text": "Okay, I'm listening."
+    },
+    {
+      "timestamp": 29,
+      "speaker": "agent",
+      "text": "You have the right to request written validation of this debt within 30 days. You also have the right to dispute the debt if you believe it's incorrect. Additionally, if you request in writing that we cease communication, we are required to do so except in specific circumstances. Do you understand these rights?"
+    },
+    {
+      "timestamp": 52,
+      "speaker": "client",
+      "text": "Yes, I understand. I do remember this debt. What are my options?"
+    },
+    {
+      "timestamp": 58,
+      "speaker": "agent",
+      "text": "Great. We have several options. You can pay in full for a possible settlement amount, set up a payment plan, or if you're experiencing financial hardship, we can discuss a hardship program. What sounds most feasible for your situation?"
+    },
+    {
+      "timestamp": 76,
+      "speaker": "client",
+      "text": "What kind of settlement are we talking about?"
+    },
+    {
+      "timestamp": 80,
+      "speaker": "agent",
+      "text": "If you can pay within 10 days, I'm authorized to offer a 40% settlement, which would bring your total to $3,740. That would resolve this completely."
+    },
+    {
+      "timestamp": 92,
+      "speaker": "client",
+      "text": "Let me check my finances and call you back tomorrow."
+    },
+    {
+      "timestamp": 97,
+      "speaker": "agent",
+      "text": "That's perfectly fine. I'll note in your file that you're considering the settlement option. Here's my direct line and extension so you can reach me directly."
+    }
+  ],
+  "outcome": "Customer considering settlement - callback expected",
+  "metadata": {
+    "recordingId": "REC-008-2025",
+    "campaignId": "CAMP-AUTO-2025"
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "callId": "CL-2025-004",
+  "timestamp": "2025-10-10T14:18:55Z",
+  "agent": {
+    "id": "AGT-4721",
+    "name": "Amanda Rodriguez"
+  },
+  "client": {
+    "id": "CLI-3456",
+    "name": "James T."
+  },
+  "duration": 267,
+  "transcript": [
+    {
+      "timestamp": 0,
+      "speaker": "agent",
+      "text": "Hi, is James there?"
+    },
+    {
+      "timestamp": 3,
+      "speaker": "client",
+      "text": "This is James."
+    },
+    {
+      "timestamp": 5,
+      "speaker": "agent",
+      "text": "James, you better listen carefully. You owe us $3,900 and if you don't pay TODAY, I'm calling your employer tomorrow morning."
+    },
+    {
+      "timestamp": 16,
+      "speaker": "client",
+      "text": "Wait, you can't do that! That would jeopardize my job."
+    },
+    {
+      "timestamp": 22,
+      "speaker": "agent",
+      "text": "Oh I absolutely can and will. In fact, I'm also going to contact all your neighbors and let them know what kind of deadbeat you are."
+    },
+    {
+      "timestamp": 32,
+      "speaker": "client",
+      "text": "This is harassment! I need to verify this debt first."
+    },
+    {
+      "timestamp": 37,
+      "speaker": "agent",
+      "text": "Harassment? You're the one stealing our money! Pay now or you'll regret it. I've got connections, James. Don't test me."
+    },
+    {
+      "timestamp": 48,
+      "speaker": "client",
+      "text": "I'm going to report this call."
+    },
+    {
+      "timestamp": 51,
+      "speaker": "agent",
+      "text": "Go ahead and try. Nobody's going to believe a thief like you. Pay up NOW!"
+    }
+  ],
+  "outcome": "Customer threatened to file complaint",
+  "metadata": {
+    "recordingId": "REC-004-2025",
+    "campaignId": "CAMP-AUTO-2025"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "callId": "CALL-2025-001",
+  "timestamp": "2025-10-10T09:30:00Z",
+  "duration": "00:05:23",
+  "agentId": "AGT-101",
+  "agentName": "John Smith",
+  "accountNumber": "ACC-12345",
+  "transcript": [
+    {
+      "speaker": "agent",
+      "timestamp": "2025-10-10T09:30:05Z",
+      "text": "Hello, this is John from ABC Collections. Am I speaking with Mr. Johnson?"
+    },
+    {
+      "speaker": "customer",
+      "timestamp": "2025-10-10T09:30:10Z",
+      "text": "Yes, this is Mr. Johnson."
+    },
+    {
+      "speaker": "agent",
+      "timestamp": "2025-10-10T09:30:15Z",
+      "text": "I'm calling regarding your outstanding balance of $500 with XYZ Bank. Are you able to make a payment today?"
+    },
+    {
+      "speaker": "customer",
+      "timestamp": "2025-10-10T09:30:25Z",
+      "text": "I've been having some financial difficulties lately. Can we work out a payment plan?"
+    },
+    {
+      "speaker": "agent",
+      "timestamp": "2025-10-10T09:30:35Z",
+      "text": "We can certainly discuss payment plan options. Would you be able to make an initial payment of $100 today?"
+    }
+  ],
+  "metadata": {
+    "callType": "outbound",
+    "accountBalance": 500.00,
+    "previousContacts": 2,
+    "callOutcome": "payment_plan_initiated"
+  }
+}

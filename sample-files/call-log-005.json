@@ -1,0 +1,65 @@
+{
+  "callId": "CL-2025-005",
+  "timestamp": "2025-10-10T15:33:27Z",
+  "agent": {
+    "id": "AGT-5634",
+    "name": "Kevin Liu"
+  },
+  "client": {
+    "id": "CLI-8823",
+    "name": "Patricia W."
+  },
+  "duration": 398,
+  "transcript": [
+    {
+      "timestamp": 0,
+      "speaker": "agent",
+      "text": "Good afternoon, I'm trying to reach Patricia Wilson."
+    },
+    {
+      "timestamp": 5,
+      "speaker": "client",
+      "text": "This is Patricia."
+    },
+    {
+      "timestamp": 7,
+      "speaker": "agent",
+      "text": "Hi Patricia, my name is Kevin Liu and I'm calling from Horizon Financial Services regarding an outstanding balance. This call may be recorded for quality assurance. Is now a good time to talk?"
+    },
+    {
+      "timestamp": 22,
+      "speaker": "client",
+      "text": "I suppose so. What's this about?"
+    },
+    {
+      "timestamp": 26,
+      "speaker": "agent",
+      "text": "You have an unpaid balance of $1,823 from your utility account. I'm required to inform you that this is an attempt to collect a debt, and any information obtained will be used for that purpose. Would you like me to explain the details?"
+    },
+    {
+      "timestamp": 45,
+      "speaker": "client",
+      "text": "Yes, I wasn't aware of this."
+    },
+    {
+      "timestamp": 49,
+      "speaker": "agent",
+      "text": "No problem. This debt originated from June through August of this year. You have the right to dispute this debt within 30 days if you believe it's not valid. Would you like written verification?"
+    },
+    {
+      "timestamp": 65,
+      "speaker": "client",
+      "text": "No, I remember now. I had some issues during those months. Can we work something out?"
+    },
+    {
+      "timestamp": 73,
+      "speaker": "agent",
+      "text": "Absolutely. I'm here to help you resolve this. What payment option would work best for your situation?"
+    }
+  ],
+  "outcome": "Discussion ongoing - customer considering options",
+  "metadata": {
+    "recordingId": "REC-005-2025",
+    "campaignId": "CAMP-UTIL-2025"
+  }
+}

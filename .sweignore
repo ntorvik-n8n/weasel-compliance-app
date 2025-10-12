@@ -1,0 +1,14 @@
+node_modules/
+.next/
+.git/
+.ai/
+.bmad-core/
+.continue/
+.swc/
+.github/
+coverage/
+__tests__/
+*.log
+.env.local
+.DS_Store
+deployment.zip

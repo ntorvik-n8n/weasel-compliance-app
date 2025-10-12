@@ -1,0 +1,65 @@
+{
+  "callId": "CL-2025-007",
+  "timestamp": "2025-10-11T11:42:09Z",
+  "agent": {
+    "id": "AGT-7821",
+    "name": "Lisa Martinez"
+  },
+  "client": {
+    "id": "CLI-5567",
+    "name": "Michelle H."
+  },
+  "duration": 445,
+  "transcript": [
+    {
+      "timestamp": 0,
+      "speaker": "agent",
+      "text": "Hello, may I please speak with Michelle Harris?"
+    },
+    {
+      "timestamp": 4,
+      "speaker": "client",
+      "text": "Yes, this is Michelle."
+    },
+    {
+      "timestamp": 6,
+      "speaker": "agent",
+      "text": "Hi Michelle, this is Lisa Martinez from Premier Recovery Associates. I'm calling about an account that's been referred to us. Do you have a moment to discuss this privately?"
+    },
+    {
+      "timestamp": 20,
+      "speaker": "client",
+      "text": "I'm at work right now. Can you call me back later?"
+    },
+    {
+      "timestamp": 25,
+      "speaker": "agent",
+      "text": "Of course, I completely understand. What time works best for you? I want to make sure this is convenient."
+    },
+    {
+      "timestamp": 33,
+      "speaker": "client",
+      "text": "Maybe around 6 PM?"
+    },
+    {
+      "timestamp": 36,
+      "speaker": "agent",
+      "text": "Perfect. I'll call you at 6 PM today at this same number. Is that still the best number to reach you?"
+    },
+    {
+      "timestamp": 43,
+      "speaker": "client",
+      "text": "Yes, that works. Thank you for being understanding."
+    },
+    {
+      "timestamp": 47,
+      "speaker": "agent",
+      "text": "Absolutely. I look forward to speaking with you then. Have a good rest of your day."
+    }
+  ],
+  "outcome": "Follow-up scheduled for 6 PM",
+  "metadata": {
+    "recordingId": "REC-007-2025",
+    "campaignId": "CAMP-CC-2025"
+  }
+}

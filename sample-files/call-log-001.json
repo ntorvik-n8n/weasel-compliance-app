@@ -1,0 +1,60 @@
+{
+  "callId": "CL-2025-001",
+  "timestamp": "2025-10-10T09:15:23Z",
+  "agent": {
+    "id": "AGT-1023",
+    "name": "Michael Torres"
+  },
+  "client": {
+    "id": "CLI-5891",
+    "name": "Jennifer M."
+  },
+  "duration": 420,
+  "transcript": [
+    {
+      "timestamp": 0,
+      "speaker": "agent",
+      "text": "Good morning, this is Michael Torres calling from ABC Collections. Am I speaking with Jennifer?"
+    },
+    {
+      "timestamp": 8,
+      "speaker": "client",
+      "text": "Yes, this is Jennifer."
+    },
+    {
+      "timestamp": 12,
+      "speaker": "agent",
+      "text": "Thank you. I'm calling regarding an outstanding balance on your credit card account ending in 4582. Are you able to discuss this matter right now?"
+    },
+    {
+      "timestamp": 25,
+      "speaker": "client",
+      "text": "I guess so. I've been having some financial difficulties."
+    },
+    {
+      "timestamp": 32,
+      "speaker": "agent",
+      "text": "I understand these situations can be challenging. The current balance is $2,847. Would you be able to make a payment today, or would you like to discuss a payment plan?"
+    },
+    {
+      "timestamp": 48,
+      "speaker": "client",
+      "text": "I can probably do $200 today."
+    },
+    {
+      "timestamp": 53,
+      "speaker": "agent",
+      "text": "That's great. I can set that up for you right now. Would you like to discuss a payment plan for the remaining balance?"
+    },
+    {
+      "timestamp": 62,
+      "speaker": "client",
+      "text": "Yes, that would be helpful."
+    }
+  ],
+  "outcome": "Payment arranged - $200 immediate, payment plan discussed",
+  "metadata": {
+    "recordingId": "REC-001-2025",
+    "campaignId": "CAMP-CC-2025"
+  }
+}

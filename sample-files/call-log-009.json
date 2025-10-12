@@ -1,0 +1,60 @@
+{
+  "callId": "CL-2025-009",
+  "timestamp": "2025-10-11T14:55:31Z",
+  "agent": {
+    "id": "AGT-9045",
+    "name": "Christine Davis"
+  },
+  "client": {
+    "id": "CLI-4412",
+    "name": "Angela M."
+  },
+  "duration": 221,
+  "transcript": [
+    {
+      "timestamp": 0,
+      "speaker": "agent",
+      "text": "Angela, this is your FINAL WARNING. You have 24 hours to pay $7,800 or we're filing a lawsuit!"
+    },
+    {
+      "timestamp": 9,
+      "speaker": "client",
+      "text": "Wait, who are you? I don't even know what this is about!"
+    },
+    {
+      "timestamp": 14,
+      "speaker": "agent",
+      "text": "Don't play stupid with me. You took out a payday loan and never paid it back. That's THEFT! We can have you arrested for this!"
+    },
+    {
+      "timestamp": 25,
+      "speaker": "client",
+      "text": "Arrested? That doesn't sound legal. I need documentation."
+    },
+    {
+      "timestamp": 31,
+      "speaker": "agent",
+      "text": "You'll get your documentation when the sheriff serves you papers at your job! How would you like that? Everyone at your workplace will know you're a criminal!"
+    },
+    {
+      "timestamp": 43,
+      "speaker": "client",
+      "text": "I don't think you're allowed to talk to me this way."
+    },
+    {
+      "timestamp": 47,
+      "speaker": "agent",
+      "text": "I can talk to you however I want! You're a liar and a thief! Pay NOW or face criminal charges! This is your last chance!"
+    },
+    {
+      "timestamp": 57,
+      "speaker": "client",
+      "text": "I'm reporting this call. Goodbye."
+    }
+  ],
+  "outcome": "Customer hung up - high complaint risk",
+  "metadata": {
+    "recordingId": "REC-009-2025",
+    "campaignId": "CAMP-PAYDAY-2025"
+  }
+}
