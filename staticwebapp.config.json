@@ -1,7 +1,6 @@
 {
-  "navigationFallback": {
-    "rewrite": "/index.html",
-    "exclude": ["/images/*.{png,jpg,gif,ico}", "/css/*"]
+  "platform": {
+    "apiRuntime": "node:18"
   },
   "mimeTypes": {
     ".json": "application/json"
@@ -18,11 +17,5 @@
       "route": "/*",
       "allowedRoles": ["anonymous"]
     }
-  ],
-  "responseOverrides": {
-    "404": {
-      "rewrite": "/index.html",
-      "statusCode": 200
-    }
-  }
+  ]
 }
