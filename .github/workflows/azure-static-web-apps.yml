@@ -27,8 +27,8 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           app_location: "/"
-          api_location: "app/api"
-          output_location: ".next/standalone"
+          api_location: ""
+          output_location: ""
           skip_app_build: false
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
