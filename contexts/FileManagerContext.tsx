@@ -167,6 +167,7 @@ function fileManagerReducer(state: ExtendedFileManagerState, action: Action): Ex
 interface ExtendedFileManagerActions extends FileManagerContextActions {
   loadSelectedFileData: (filename: string, uploadedAt: Date) => Promise<void>;
   setHighlightedViolation: (violationIndex: number | null) => void;
+  setFiles: (files: FileMetadata[]) => void;
   selectedFile: FileMetadata | null;
 }
 
