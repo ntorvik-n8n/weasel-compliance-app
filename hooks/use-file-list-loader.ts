@@ -13,11 +13,6 @@ export function useFileListLoader() {
     let isMounted = true;
 
     const loadFiles = async () => {
-      // Only load if we don't have files already
-      if (state.files.length > 0) {
-        return;
-      }
-
       try {
         const response = await fetch('/api/files');
 
@@ -31,12 +26,13 @@ export function useFileListLoader() {
           // Convert uploadedAt strings to Date objects
           const filesWithDates = data.files.map((file: any) => ({
             ...file,
+            id: file.id || file.name,
             uploadedAt: new Date(file.uploadedAt),
             lastModified: file.lastModified ? new Date(file.lastModified) : new Date(file.uploadedAt),
           }));
 
-          // Files will be loaded through the normal context flow
-          // This hook is deprecated and can be removed
+          // Set files in the context
+          actions.setFiles(filesWithDates);
         }
       } catch (error) {
         console.error('Error loading file list:', error);
