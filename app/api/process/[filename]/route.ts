@@ -45,8 +45,11 @@ async function processAnalysis(filename: string, uploadedAt: Date) {
   const blobService = getBlobStorageService();
 
   try {
+    console.log(`[Process] Starting analysis for ${filename} uploaded at ${uploadedAt.toISOString()}`);
+
     // 1. Update status to 'processing'
     await blobService.updateMetadata(filename, uploadedAt, { status: 'processing' });
+    console.log(`[Process] Status updated to 'processing' for ${filename}`);
 
     // 2. Get file content
     const content = await blobService.downloadFile(filename, uploadedAt);
@@ -54,12 +57,17 @@ async function processAnalysis(filename: string, uploadedAt: Date) {
         throw new Error(`File content not found for ${filename}`);
     }
     const callLog = JSON.parse(content.toString());
+    console.log(`[Process] File content downloaded and parsed for ${filename}`);
 
     // 3. Call AI analysis
+    console.log(`[Process] Calling Anthropic AI for ${filename}...`);
+    console.log(`[Process] ANTHROPIC_API_KEY present: ${!!process.env.ANTHROPIC_API_KEY}`);
     const analysisResult = await getComplianceAnalysis(callLog.transcript);
+    console.log(`[Process] AI analysis completed for ${filename} - Risk: ${analysisResult.riskScore}`);
 
     // 4. Store the analysis result in the 'processed' container (same date path)
     await blobService.uploadAnalysisResult(filename, analysisResult, uploadedAt);
+    console.log(`[Process] Analysis result uploaded to processed container for ${filename}`);
 
     // 5. Update the original file's metadata with the final status and result pointer
     await blobService.updateMetadata(filename, uploadedAt, {
@@ -67,13 +75,19 @@ async function processAnalysis(filename: string, uploadedAt: Date) {
         riskScore: String(analysisResult.riskScore),
         // Full analysis stored in processed container
     });
+    console.log(`[Process] ✅ Analysis completed successfully for ${filename}`);
 
   } catch (error) {
-    console.error(`Error during analysis of ${filename}:`, error);
+    console.error(`[Process] ❌ Error during analysis of ${filename}:`, error);
+    console.error(`[Process] Error type: ${error instanceof Error ? error.constructor.name : typeof error}`);
+    console.error(`[Process] Error message: ${error instanceof Error ? error.message : String(error)}`);
+    console.error(`[Process] Error stack:`, error instanceof Error ? error.stack : 'No stack trace');
+
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     await blobService.updateMetadata(filename, uploadedAt, {
         status: 'error',
         errorMessage,
     });
+    console.error(`[Process] Status updated to 'error' for ${filename} with message: ${errorMessage}`);
   }
 }
