@@ -28,13 +28,13 @@ jobs:
           action: "upload"
           app_location: "/"
           api_location: ""
-          output_location: ".next"
+          output_location: "out"
           skip_app_build: false
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
           AZURE_STORAGE_CONTAINER_NAME: "call-logs"
-          NEXT_PUBLIC_AZURE_STORAGE_CONTAINER_NAME: "call-logs"  # Added this line
+          NEXT_PUBLIC_AZURE_STORAGE_CONTAINER_NAME: "call-logs"
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
