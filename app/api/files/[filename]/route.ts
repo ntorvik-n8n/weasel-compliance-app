@@ -3,10 +3,11 @@ import { getBlobStorageService } from '@/lib/azure/blobStorageClient';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { filename: string } }
+  { params }: { params: Promise<{ filename: string }> }
 ) {
   try {
-    const filename = decodeURIComponent(params.filename);
+    const { filename: rawFilename } = await params;
+    const filename = decodeURIComponent(rawFilename);
     const uploadedAt = request.nextUrl.searchParams.get('uploadedAt');
 
     if (!uploadedAt) {
@@ -30,7 +31,7 @@ export async function GET(
     }
 
   } catch (error) {
-    console.error(`Failed to fetch transcript for ${params.filename}:`, error);
+    console.error(`Failed to fetch transcript:`, error);
     return NextResponse.json({ error: 'Failed to fetch transcript' }, { status: 500 });
   }
 }
@@ -42,10 +43,10 @@ export async function GET(
  */
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { filename: string } }
+  { params }: { params: Promise<{ filename: string }> }
 ) {
   try {
-    const { filename } = params;
+    const { filename } = await params;
     const searchParams = request.nextUrl.searchParams;
 
     // Parse query parameters
@@ -95,9 +96,10 @@ export async function PATCH(
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { filename: string } }
+  { params }: { params: Promise<{ filename: string }> }
 ) {
-  const filename = decodeURIComponent(params.filename);
+  const { filename: rawFilename } = await params;
+  const filename = decodeURIComponent(rawFilename);
   const uploadedAt = request.nextUrl.searchParams.get('uploadedAt');
 
   if (!uploadedAt) {

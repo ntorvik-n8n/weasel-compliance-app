@@ -4,9 +4,10 @@
 
 **Project Name:** Collections Call Monitor Evaluation App
 **Code Name:** Weasel
-**Status:** Proof of Concept (POC) - Initial Development
+**Status:** Proof of Concept (POC) - Active Development
 **Target Deployment:** Microsoft Azure Static Web Apps
-**Framework:** Next.js 14 with Anthropic API integration
+**Framework:** Next.js 15.5.4 with Anthropic API integration
+**Last Updated:** 2025-10-13
 
 ### Purpose
 AI-powered monitoring tool that analyzes debt collection calls for FDCPA (Fair Debt Collection Practices Act) compliance. The application transcribes calls, evaluates agent behavior, identifies violations, and provides recommendations for improved communication practices.
@@ -16,26 +17,29 @@ AI-powered monitoring tool that analyzes debt collection calls for FDCPA (Fair D
 ## Tech Stack
 
 ### Frontend
-- **Framework:** Next.js 14 with App Router
-- **Language:** TypeScript (recommended for type safety)
-- **Styling:** Tailwind CSS
-- **File Upload:** React-Dropzone for drag-and-drop functionality
+- **Framework:** Next.js 15.5.4 with App Router
+- **Language:** TypeScript 5.9.3
+- **Styling:** Tailwind CSS 3.4.1
+- **File Upload:** React-Dropzone 14.3.8
 - **State Management:** React Context API
-- **Charts/Visualization:** Recharts or Chart.js
-- **UI Components:** shadcn/ui (recommended) or custom components
+- **Charts/Visualization:** Recharts 2.15.4
+- **UI Components:** Headless UI 2.2.9 + Heroicons 2.2.0
 
 ### Backend
-- **API Routes:** Next.js API routes (serverless functions)
-- **AI Integration:** Anthropic Claude API (Claude-3 or Claude-3.5)
-- **File Storage:** Azure Blob Storage
-- **Monitoring:** Azure Application Insights
-- **Security:** Azure Key Vault for secrets management
+- **API Routes:** Next.js 15 API routes (serverless functions, Azure Functions compatible)
+- **AI Integration:** Anthropic Claude API (@anthropic-ai/sdk 0.65.0) - Claude-3-Haiku for fast analysis
+- **File Storage:** Azure Blob Storage (@azure/storage-blob 12.28.0)
+  - Date-partitioned structure (YYYY/MM/DD)
+  - Separate containers: raw, processed, backups
+- **Monitoring:** Azure Application Insights (optional)
+- **Security:** Environment-based secrets management
 
 ### Development Tools
-- **Package Manager:** npm or pnpm
-- **Code Quality:** ESLint, Prettier
-- **Testing:** Jest + React Testing Library (optional for POC)
-- **Git:** Version control (repository not yet initialized)
+- **Package Manager:** npm
+- **Node.js:** v22.16.0
+- **Code Quality:** ESLint 8.57.1, Prettier 3.6.2
+- **Testing:** Jest 30.2.0 + React Testing Library 16.3.0
+- **Git:** Version control with GitHub integration
 
 ---
 
@@ -441,23 +445,71 @@ npm run format
 
 ---
 
-## Next Steps (Implementation Order)
+## Implementation Status
 
-1. ✅ **Project Planning Complete** (PRD and claude.md created)
-2. ⬜ Initialize Next.js 14 project with TypeScript
-3. ⬜ Set up Tailwind CSS and basic layout
-4. ⬜ Create file upload component with React-Dropzone
-5. ⬜ Implement Azure Blob Storage integration
-6. ⬜ Build API route for file upload
-7. ⬜ Add filename collision detection and resolution
-8. ⬜ Integrate Anthropic API for call analysis
-9. ⬜ Build dashboard UI components
-10. ⬜ Implement transcript viewer with highlighting
-11. ⬜ Create response evaluation system
-12. ⬜ Add search and filter functionality
-13. ⬜ Implement error handling and logging
-14. ⬜ Deploy to Azure Static Web Apps
-15. ⬜ Testing and refinement
+### ✅ Completed (Phase 1 & 2)
+1. ✅ **Project Planning** - PRD and documentation created
+2. ✅ **Next.js 15.5.4 Setup** - Initialized with TypeScript and App Router
+3. ✅ **Tailwind CSS** - Configured with custom design system
+4. ✅ **File Upload System** - React-Dropzone with multi-file support
+5. ✅ **Azure Blob Storage** - Date-partitioned structure implemented
+6. ✅ **File Upload API** - `/api/upload` endpoint with validation
+7. ✅ **AI Compliance Analysis** - Anthropic Claude-3-Haiku integration
+8. ✅ **File Processing API** - Background analysis with status tracking
+9. ✅ **Dashboard UI** - File list, upload progress, analysis display
+10. ✅ **File Management** - List, view, delete operations
+11. ✅ **Next.js 15 Compliance** - All API routes updated for async params
+12. ✅ **Error Handling** - Comprehensive error handling and logging
+
+### 🚧 In Progress (Phase 3)
+- Enhanced visualization and charting
+- Advanced filtering and search
+- Response evaluation system
+- Compliance reporting exports
+
+### ⬜ Planned
+- Authentication (Azure AD integration)
+- Advanced analytics dashboard
+- Batch processing capabilities
+- Performance optimization
+
+---
+
+## Recent Changes & Important Notes
+
+### October 13, 2025 - Next.js 15 Migration & Fixes
+**Critical Changes:**
+- ✅ **Removed `output: 'export'` from next.config.js** - Was incompatible with API routes, causing 500 errors
+- ✅ **Updated all API routes for Next.js 15** - Params now properly awaited as `Promise<{ filename: string }>`
+- ✅ **Removed deprecated `swcMinify` option** - No longer needed in Next.js 15
+- ✅ **Fixed file listing functionality** - Files now properly displayed after upload
+- ✅ **Azure SWA Configuration** - API routes work correctly with Azure Static Web Apps
+
+**Technical Details:**
+- Date-partitioned storage: Files stored as `YYYY/MM/DD/filename.json`
+- Multiple containers: `call-logs-raw`, `call-logs-processed`, `call-logs-backups`
+- Analysis runs in background via fire-and-forget pattern
+- Status polling API for real-time updates
+
+**Known Considerations:**
+- Files with same name can exist in different date partitions
+- Blob storage API includes date verification for extra safety
+- Analysis results cached in processed container to avoid re-analysis
+
+### Configuration Notes
+**next.config.js:**
+- Must NOT include `output: 'export'` (breaks API routes)
+- Images set to `unoptimized: true` for Azure SWA compatibility
+- React strict mode enabled
+
+**Environment Variables Required:**
+```bash
+ANTHROPIC_API_KEY=sk-ant-...
+AZURE_STORAGE_CONNECTION_STRING=DefaultEndpointsProtocol=...
+AZURE_STORAGE_CONTAINER_RAW=call-logs-raw
+AZURE_STORAGE_CONTAINER_PROCESSED=call-logs-processed
+AZURE_STORAGE_CONTAINER_BACKUPS=call-logs-backups
+```
 
 ---
 
@@ -479,4 +531,4 @@ For complete details on all features, user stories, technical architecture, and 
 
 ---
 
-*Last Updated: 2025-10-10*
+*Last Updated: 2025-10-13 - Next.js 15 Migration Complete*

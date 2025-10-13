@@ -3,10 +3,11 @@ import { getBlobStorageService } from '@/lib/azure/blobStorageClient';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { filename: string } }
+  { params }: { params: Promise<{ filename: string }> }
 ) {
   try {
-    const filename = decodeURIComponent(params.filename);
+    const { filename: rawFilename } = await params;
+    const filename = decodeURIComponent(rawFilename);
     const uploadedAt = request.nextUrl.searchParams.get('uploadedAt');
 
     if (!uploadedAt) {
@@ -136,7 +137,7 @@ export async function GET(
       return NextResponse.json({ error: 'Call log file not found' }, { status: 404 });
     }
   } catch (error) {
-    console.error(`Failed to fetch analysis for ${params.filename}:`, error);
+    console.error(`Failed to fetch analysis:`, error);
     return NextResponse.json({ error: 'Failed to fetch analysis content' }, { status: 500 });
   }
 }

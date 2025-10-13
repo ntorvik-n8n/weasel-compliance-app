@@ -28,7 +28,7 @@ jobs:
           action: "upload"
           app_location: "/"
           api_location: ""
-          output_location: ".next"
+          output_location: "out"
           skip_app_build: false
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

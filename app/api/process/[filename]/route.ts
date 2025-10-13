@@ -4,9 +4,10 @@ import { getComplianceAnalysis } from '@/lib/anthropic/client';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { filename: string } }
+  { params }: { params: Promise<{ filename: string }> }
 ) {
-  const filename = decodeURIComponent(params.filename);
+  const { filename: rawFilename } = await params;
+  const filename = decodeURIComponent(rawFilename);
 
   try {
     // Get uploadedAt from request body or query params
