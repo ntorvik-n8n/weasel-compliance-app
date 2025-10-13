@@ -68,7 +68,13 @@ export async function POST(request: NextRequest) {
 
     // We don't await this, it runs in the background
     fetch(processUrl.toString(), {
-        method: 'POST'
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          uploadedAt: uploadedAt.toISOString(),
+        }),
     });
 
     const responseData: Partial<AppFileMetadata> = {
