@@ -23,19 +23,21 @@ export async function POST(
       uploadedAt = metadata?.uploadedAt ? new Date(metadata.uploadedAt) : new Date();
     }
 
-    // Fire-and-forget: don't await this, let it run in the background
-    processAnalysis(filename, uploadedAt);
+    // IMPORTANT: Must await in Azure SWA - fire-and-forget doesn't work
+    // The function execution context terminates when response is sent,
+    // killing any unfinished async operations
+    await processAnalysis(filename, uploadedAt);
 
-    // Immediately return a response to the client
+    // Return success after analysis completes
     return NextResponse.json({
       success: true,
-      message: `Analysis for ${filename} has been queued.`,
+      message: `Analysis for ${filename} completed successfully.`,
     });
   } catch (error) {
-    console.error(`Failed to queue analysis for ${filename}:`, error);
-    // This error is for the queuing process itself, not the analysis
+    console.error(`Failed to process analysis for ${filename}:`, error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
-      { error: 'Failed to queue analysis' },
+      { error: `Failed to process analysis: ${errorMessage}` },
       { status: 500 }
     );
   }

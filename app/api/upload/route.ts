@@ -66,7 +66,8 @@ export async function POST(request: NextRequest) {
     const baseUrl = `${requestUrl.protocol}//${requestUrl.host}`;
     const processUrl = new URL(`/api/process/${encodeURIComponent(file.name)}`, baseUrl);
 
-    // We don't await this, it runs in the background
+    // Trigger processing (don't await - let it run separately)
+    // The process endpoint will now properly await the full analysis
     fetch(processUrl.toString(), {
         method: 'POST',
         headers: {
@@ -75,6 +76,9 @@ export async function POST(request: NextRequest) {
         body: JSON.stringify({
           uploadedAt: uploadedAt.toISOString(),
         }),
+    }).catch(err => {
+      // Log but don't fail the upload if processing trigger fails
+      console.error(`Failed to trigger analysis for ${file.name}:`, err);
     });
 
     const responseData: Partial<AppFileMetadata> = {
