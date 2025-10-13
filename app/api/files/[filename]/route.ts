@@ -110,8 +110,15 @@ export async function DELETE(
 
     console.log(`Deleting file from Azure: ${filename} uploaded at ${uploadedAt}`);
 
-    // Delete from Azure Blob Storage
+    // Delete from both raw and processed containers (processed may not exist, that's okay)
     await blobService.deleteFile(filename, uploadDate, 'raw');
+
+    // Try to delete from processed container too (won't fail if not found)
+    try {
+      await blobService.deleteFile(filename, uploadDate, 'processed');
+    } catch (processedError) {
+      console.log(`No processed file to delete for ${filename} (this is normal)`);
+    }
 
     return NextResponse.json({
       success: true,

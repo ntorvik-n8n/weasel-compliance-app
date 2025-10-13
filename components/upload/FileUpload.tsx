@@ -4,6 +4,7 @@ import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import type { FileUploadProps, UploadedFile } from './types';
 import { useUploadProgress } from '@/contexts/UploadProgressContext';
+import { useFileManager } from '@/contexts/FileManagerContext';
 import { uploadFileWithProgress } from '@/lib/uploadWithProgress';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -15,6 +16,7 @@ export function FileUpload({
   className = '',
 }: FileUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
+  const { actions } = useFileManager();
 
   const validateFile = useCallback((file: File): string | null => {
     if (!file.type.includes('json')) {
@@ -28,6 +30,26 @@ export function FileUpload({
 
   const { startUpload } = useUploadProgress();
 
+  const refreshFileList = useCallback(async () => {
+    try {
+      const response = await fetch('/api/files');
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.files) {
+          const filesWithDates = data.files.map((file: any) => ({
+            ...file,
+            id: file.id || file.name,
+            uploadedAt: new Date(file.uploadedAt),
+            lastModified: file.lastModified ? new Date(file.lastModified) : new Date(file.uploadedAt),
+          }));
+          actions.setFiles(filesWithDates);
+        }
+      }
+    } catch (error) {
+      console.error('Error refreshing file list:', error);
+    }
+  }, [actions]);
+
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     setIsUploading(true);
 
@@ -40,7 +62,7 @@ export function FileUpload({
 
       try {
         // Use the context's startUpload which handles the entire upload process
-        startUpload(file);
+        startUpload(file, refreshFileList);
         onUploadComplete?.({
           id: crypto.randomUUID(),
           name: file.name,
@@ -55,7 +77,7 @@ export function FileUpload({
     }
 
     setIsUploading(false);
-  }, [validateFile, onUploadError, onUploadComplete, startUpload]);
+  }, [validateFile, onUploadError, onUploadComplete, startUpload, refreshFileList]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,

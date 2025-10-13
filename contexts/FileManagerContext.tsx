@@ -33,7 +33,7 @@ type Action =
   | { type: 'SELECT_FILE'; payload: string | null }
   | { type: 'SET_FILTER'; payload: { name: string; value: any } }
   | { type: 'CLEAR_FILTERS' }
-  | { type: 'UPDATE_FILE_STATUSES'; payload: { name: string; status: FileStatus }[] }
+  | { type: 'UPDATE_FILE_STATUSES'; payload: { name: string; status: FileStatus; riskScore?: number }[] }
   | { type: 'SET_SELECTED_FILE_DATA'; payload: { transcript: TranscriptTurn[] | null; analysis: AnalysisResult | null } }
   | { type: 'SET_SELECTED_FILE_LOADING'; payload: boolean }
   | { type: 'SET_HIGHLIGHTED_VIOLATION'; payload: number | null };
@@ -138,7 +138,7 @@ function fileManagerReducer(state: ExtendedFileManagerState, action: Action): Ex
             ...state,
             files: state.files.map(file => {
                 const update = action.payload.find(u => u.name === file.name);
-                return update ? { ...file, status: update.status } : file;
+                return update ? { ...file, status: update.status, riskScore: update.riskScore ?? file.riskScore } : file;
             }),
         };
     case 'SET_SELECTED_FILE_DATA':
@@ -166,9 +166,9 @@ function fileManagerReducer(state: ExtendedFileManagerState, action: Action): Ex
 // Extended actions with loadSelectedFileData
 interface ExtendedFileManagerActions extends FileManagerContextActions {
   loadSelectedFileData: (filename: string, uploadedAt: Date) => Promise<void>;
+  clearSelectedFileData: () => void;
   setHighlightedViolation: (violationIndex: number | null) => void;
   setFiles: (files: FileMetadata[]) => void;
-  selectedFile: FileMetadata | null;
 }
 
 const FileManagerContext = createContext<
@@ -268,7 +268,7 @@ export function FileManagerProvider({ children }: FileManagerProviderProps) {
     clearFilters: () => {
         dispatch({ type: 'CLEAR_FILTERS' });
     },
-    updateFileStatuses: (updates: { name: string; status: FileStatus }[]) => {
+    updateFileStatuses: (updates: { name: string; status: FileStatus; riskScore?: number }[]) => {
         dispatch({ type: 'UPDATE_FILE_STATUSES', payload: updates });
     },
 
@@ -280,7 +280,19 @@ export function FileManagerProvider({ children }: FileManagerProviderProps) {
       dispatch({ type: 'SET_FILES', payload: files });
     },
 
+    clearSelectedFileData: () => {
+      dispatch({
+        type: 'SET_SELECTED_FILE_DATA',
+        payload: { transcript: null, analysis: null }
+      });
+    },
+
     loadSelectedFileData: async (filename: string, uploadedAt: Date) => {
+      // Clear previous file data first
+      dispatch({
+        type: 'SET_SELECTED_FILE_DATA',
+        payload: { transcript: null, analysis: null }
+      });
       dispatch({ type: 'SET_SELECTED_FILE_LOADING', payload: true });
       dispatch({ type: 'SET_ERROR', payload: null });
 
@@ -353,8 +365,6 @@ export function FileManagerProvider({ children }: FileManagerProviderProps) {
         });
       }
     },
-
-    selectedFile: state.files.find(f => f.name === state.selectedFile) || null,
   }), [state.sortBy, state.sortDirection, state.files, state.selectedFile]);
 
   const selectedFile = state.files.find(f => f.name === state.selectedFile) || null;

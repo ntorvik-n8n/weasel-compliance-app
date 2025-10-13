@@ -9,10 +9,21 @@ export async function POST(
   const filename = decodeURIComponent(params.filename);
 
   try {
-    const blobService = getBlobStorageService();
+    // Get uploadedAt from request body or query params
+    let uploadedAt: Date;
+
+    try {
+      const body = await request.json();
+      uploadedAt = body.uploadedAt ? new Date(body.uploadedAt) : new Date();
+    } catch (e) {
+      // If no body or invalid JSON, try to get the file's upload date from Azure
+      const blobService = getBlobStorageService();
+      const metadata = await blobService.getFileMetadata(filename);
+      uploadedAt = metadata?.uploadedAt ? new Date(metadata.uploadedAt) : new Date();
+    }
 
     // Fire-and-forget: don't await this, let it run in the background
-    processAnalysis(filename);
+    processAnalysis(filename, uploadedAt);
 
     // Immediately return a response to the client
     return NextResponse.json({
@@ -29,16 +40,15 @@ export async function POST(
   }
 }
 
-async function processAnalysis(filename: string) {
+async function processAnalysis(filename: string, uploadedAt: Date) {
   const blobService = getBlobStorageService();
-  const now = new Date();
 
   try {
     // 1. Update status to 'processing'
-    await blobService.updateMetadata(filename, now, { status: 'processing' });
+    await blobService.updateMetadata(filename, uploadedAt, { status: 'processing' });
 
     // 2. Get file content
-    const content = await blobService.downloadFile(filename, now);
+    const content = await blobService.downloadFile(filename, uploadedAt);
     if (!content) {
         throw new Error(`File content not found for ${filename}`);
     }
@@ -48,10 +58,10 @@ async function processAnalysis(filename: string) {
     const analysisResult = await getComplianceAnalysis(callLog.transcript);
 
     // 4. Store the analysis result in the 'processed' container (same date path)
-    await blobService.uploadAnalysisResult(filename, analysisResult, now);
+    await blobService.uploadAnalysisResult(filename, analysisResult, uploadedAt);
 
     // 5. Update the original file's metadata with the final status and result pointer
-    await blobService.updateMetadata(filename, now, {
+    await blobService.updateMetadata(filename, uploadedAt, {
         status: 'analyzed',
         riskScore: String(analysisResult.riskScore),
         // Full analysis stored in processed container
@@ -60,7 +70,7 @@ async function processAnalysis(filename: string) {
   } catch (error) {
     console.error(`Error during analysis of ${filename}:`, error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    await blobService.updateMetadata(filename, now, {
+    await blobService.updateMetadata(filename, uploadedAt, {
         status: 'error',
         errorMessage,
     });

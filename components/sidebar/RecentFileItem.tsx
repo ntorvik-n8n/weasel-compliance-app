@@ -16,7 +16,14 @@ export function RecentFileItem({ file }: RecentFileItemProps) {
           {formatRelativeTime(file.uploadedAt)} &middot; {formatFileSize(file.size)}
         </p>
       </div>
-      <StatusBadge status={file.status} />
+      <div className="flex items-center gap-2">
+        {file.riskScore !== undefined && (
+          <span className="text-xs font-medium text-gray-700">
+            {file.riskScore.toFixed(1)}
+          </span>
+        )}
+        <StatusBadge status={file.status} />
+      </div>
     </li>
   );
 }

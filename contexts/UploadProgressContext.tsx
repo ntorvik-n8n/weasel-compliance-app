@@ -5,7 +5,7 @@ import { UploadProgress, UploadState, UploadError } from '@/types/upload';
 
 interface UploadProgressContextValue {
   uploads: Map<string, UploadProgress>;
-  startUpload: (file: File) => void;
+  startUpload: (file: File, onComplete?: () => void) => void;
   retryUpload: (fileId: string) => Promise<void>;
   cancelUpload: (fileId: string) => void;
   dismissUpload: (fileId: string) => void; // New function
@@ -63,7 +63,7 @@ export function UploadProgressProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  const uploadFile = useCallback(async (file: File, fileId: string, customFilename?: string) => {
+  const uploadFile = useCallback(async (file: File, fileId: string, customFilename?: string, onComplete?: () => void) => {
     try {
       updateState(fileId, 'uploading');
 
@@ -86,6 +86,10 @@ export function UploadProgressProvider({ children }: { children: ReactNode }) {
       xhr.onload = async () => {
         if (xhr.status >= 200 && xhr.status < 300) {
           updateState(fileId, 'complete');
+          // Trigger callback to refresh file list
+          if (onComplete) {
+            onComplete();
+          }
         } else if (xhr.status === 409) {
           // Handle collision
           const errorData = JSON.parse(xhr.responseText);
@@ -132,7 +136,7 @@ export function UploadProgressProvider({ children }: { children: ReactNode }) {
     }
   }, [updateState, updateProgress, setError]);
 
-  const startUpload = (file: File) => {
+  const startUpload = (file: File, onComplete?: () => void) => {
     const fileId = `${Date.now()}-${file.name}`;
     setUploads(prev => {
       const newUploads = new Map(prev);
@@ -152,7 +156,7 @@ export function UploadProgressProvider({ children }: { children: ReactNode }) {
       });
       return newUploads;
     });
-    uploadFile(file, fileId);
+    uploadFile(file, fileId, undefined, onComplete);
   };
 
 

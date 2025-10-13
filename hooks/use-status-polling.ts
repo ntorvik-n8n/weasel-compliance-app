@@ -10,8 +10,8 @@ export function useStatusPolling(interval = 5000) {
 
   const poll = useCallback(async () => {
     const processingFiles = state.files
-      .filter(f => f.status === 'queued' || f.status === 'processing')
-      .map(f => f.name);
+      .filter(f => f.status === 'uploaded' || f.status === 'queued' || f.status === 'processing')
+      .map(f => ({ name: f.name, uploadedAt: f.uploadedAt }));
 
     if (processingFiles.length === 0) {
       setIsPolling(false);
@@ -22,7 +22,7 @@ export function useStatusPolling(interval = 5000) {
       const response = await fetch('/api/files/status', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fileNames: processingFiles }),
+        body: JSON.stringify({ files: processingFiles }),
       });
       if (response.ok) {
         const { updates } = await response.json();
@@ -31,10 +31,10 @@ export function useStatusPolling(interval = 5000) {
     } catch (error) {
       console.error('Status polling error:', error);
     }
-  }, [state.files]);
+  }, [state.files, actions]);
 
   useEffect(() => {
-    const hasProcessingFiles = state.files.some(f => f.status === 'queued' || f.status === 'processing');
+    const hasProcessingFiles = state.files.some(f => f.status === 'uploaded' || f.status === 'queued' || f.status === 'processing');
     if (hasProcessingFiles && !isPolling) {
       setIsPolling(true);
     } else if (!hasProcessingFiles && isPolling) {

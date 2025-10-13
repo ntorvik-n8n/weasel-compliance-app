@@ -16,13 +16,6 @@ function HomePageContent() {
   useFileListLoader(); // Load initial file list from server
   const { state, actions, selectedFile } = useFileManager();
 
-  // Load data when a file is selected
-  useEffect(() => {
-    if (selectedFile?.name && selectedFile?.uploadedAt) {
-      actions.loadSelectedFileData(selectedFile.name, selectedFile.uploadedAt);
-    }
-  }, [selectedFile?.name, selectedFile?.uploadedAt, actions.loadSelectedFileData]);
-
   return (
     <div className="flex h-screen bg-gray-50">
       <main className="flex-1 flex flex-col overflow-hidden">

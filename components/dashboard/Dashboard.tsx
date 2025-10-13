@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useFileManager } from '@/contexts/FileManagerContext';
 import { AnalysisSummaryCard } from './AnalysisSummaryCard';
 
@@ -22,8 +22,12 @@ export function Dashboard() {
   useEffect(() => {
     if (selectedFile) {
       actions.loadSelectedFileData(selectedFile.name, selectedFile.uploadedAt);
+    } else {
+      // Clear data when no file is selected
+      actions.clearSelectedFileData();
     }
-  }, [selectedFile?.name, selectedFile?.uploadedAt, actions]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedFile?.name, selectedFile?.uploadedAt]);
 
   // Show error state if there is an error and no data available
   if (state.error && !state.selectedFileTranscript && !state.selectedFileAnalysis) {

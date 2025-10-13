@@ -280,6 +280,28 @@ export class BlobStorageService {
           break;
         }
 
+        // Skip blobs that don't have content length (likely deleted/corrupted)
+        if (!blob.properties.contentLength || blob.properties.contentLength === 0) {
+          console.warn(`Skipping blob with no content: ${blob.name}`);
+          continue;
+        }
+
+        // Verify blob actually exists by trying to get its properties
+        // This is more reliable than exists() which can return stale data
+        try {
+          const blobClient = container.getBlockBlobClient(blob.name);
+          await blobClient.getProperties();
+        } catch (err: any) {
+          // If we get a 404, the blob doesn't really exist - skip it
+          if (err?.statusCode === 404 || err?.code === 'BlobNotFound') {
+            console.warn(`Skipping non-existent blob (404): ${blob.name}`);
+            continue;
+          }
+          // For other errors, also skip to be safe
+          console.warn(`Error verifying blob, skipping: ${blob.name}`, err?.message);
+          continue;
+        }
+
         // Use metadata from listBlobsFlat response directly (no extra getProperties call)
         // listBlobsFlat includes basic metadata in blob.metadata
         files.push({
@@ -380,8 +402,22 @@ export class BlobStorageService {
       const path = this.getDateBasedPath(filename, date);
       const blobClient = container.getBlockBlobClient(path);
 
+      // Check if blob exists first
+      const exists = await blobClient.exists();
+      if (!exists) {
+        console.log(`Blob does not exist, skipping delete: ${path}`);
+        return; // Return successfully if blob doesn't exist (idempotent delete)
+      }
+
       await blobClient.delete();
-    } catch (error) {
+      console.log(`Successfully deleted blob: ${path}`);
+    } catch (error: any) {
+      // If the blob is not found, treat as success (already deleted)
+      if (error?.statusCode === 404 || error?.code === 'BlobNotFound') {
+        console.log(`Blob not found during delete (already deleted): ${filename}`);
+        return;
+      }
+
       console.error('Failed to delete file:', error);
       throw new Error(`Failed to delete file: ${filename}`);
     }
