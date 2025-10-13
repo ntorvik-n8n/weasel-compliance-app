@@ -26,27 +26,41 @@ export default function CallLogDetailPage() {
     const fetchDetails = async () => {
       setLoading(true);
       try {
-        const [callLogRes, analysisRes] = await Promise.all([
-          fetch(`/api/files/${filename}`),
-          fetch(`/api/analysis/${filename}`),
-        ]);
+        // First fetch the file metadata to get uploadedAt
+        const fileRes = await fetch(`/api/files/${filename}`);
 
-        if (callLogRes.ok) {
-          setCallLog(await callLogRes.json());
+        if (fileRes.ok) {
+          const callLogData = await fileRes.json();
+          setCallLog(callLogData);
+
+          // Now fetch analysis with the uploadedAt parameter from file metadata
+          const fileMetadata = state.files.find(f => f.name === decodedFilename);
+          if (fileMetadata?.uploadedAt) {
+            const uploadedAtParam = encodeURIComponent(
+              fileMetadata.uploadedAt instanceof Date
+                ? fileMetadata.uploadedAt.toISOString()
+                : fileMetadata.uploadedAt
+            );
+            const analysisRes = await fetch(
+              `/api/analysis/${filename}?uploadedAt=${uploadedAtParam}`
+            );
+
+            if (analysisRes.ok) {
+              setAnalysis(await analysisRes.json());
+            } else {
+              console.error('Analysis fetch failed:', await analysisRes.text());
+            }
+          }
         }
-        if (analysisRes.ok) {
-          setAnalysis(await analysisRes.json());
-        }
-        // Handle cases where one or both might fail
       } catch (error) {
-        console.error(error);
+        console.error('Error fetching call details:', error);
       } finally {
         setLoading(false);
       }
     };
 
     fetchDetails();
-  }, [filename]);
+  }, [filename, state.files]);
 
   const fileMetadata = state.files.find(f => f.name === decodedFilename);
 
