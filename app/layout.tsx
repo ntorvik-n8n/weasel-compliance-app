@@ -7,7 +7,7 @@ import { UploadProgressProvider } from "@/contexts/UploadProgressContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Bill Collector AI",
+  title: "Weasel Compliance Monitor",
   description: "AI-powered compliance monitoring for debt collection calls",
 };
 

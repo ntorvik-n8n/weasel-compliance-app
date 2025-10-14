@@ -2,25 +2,27 @@
 
 **Project:** Collections Call Monitor Evaluation App (Code Name: Weasel)
 **Status:** ✅ POC Complete - Production Ready
-**Last Updated:** 2025-10-12
-**Version:** 0.1.0 (with enhancements)
+**Last Updated:** 2025-10-14
+**Version:** 0.1.0
+**Build:** 14
 
 ---
 
 ## Executive Summary
 
-The Weasel POC has been successfully completed and is ready for production deployment. All critical features have been implemented, tested, and documented. Recent enhancements (2025-10-12) have further improved AI reliability and user experience.
+The Weasel POC has been successfully completed and is ready for production deployment. All critical features have been implemented, tested, and documented. Recent enhancements (2025-10-14) include expanded test datasets and UI consistency improvements.
 
 ### Key Achievements
-- ✅ Full-stack Next.js 14 application deployed
+- ✅ Full-stack Next.js 15 application deployed
 - ✅ Azure Blob Storage integration complete
 - ✅ Anthropic Claude AI compliance analysis functional
 - ✅ Comprehensive file management system
 - ✅ Interactive dashboard with risk visualization
 - ✅ Response evaluation system operational
-- ✅ **NEW**: AI retry logic with JSON repair strategies
-- ✅ **NEW**: Enhanced UI with violation severity display
-- ✅ **NEW**: Comprehensive test dataset (10 sample files)
+- ✅ AI retry logic with JSON repair strategies
+- ✅ Enhanced UI with violation severity display
+- ✅ **NEW**: Comprehensive test dataset (23 sample files covering full risk spectrum)
+- ✅ **NEW**: Consistent traffic light color coding across all UI components
 
 ---
 
@@ -139,28 +141,35 @@ The Weasel POC has been successfully completed and is ready for production deplo
 
 **Problem:** Limited test data (only 3 sample files) for comprehensive testing.
 
-**Solution:** Generated 10 diverse sample call logs covering full spectrum of compliance scenarios.
+**Solution:** Generated 23 diverse sample call logs covering full spectrum of compliance scenarios.
 
-**Features:**
-- 4 compliant/low-risk calls (proper FDCPA disclosures)
-- 2 moderate-risk calls (acceptable but improvable)
-- 4 high-risk/critical calls (major violations)
-- Realistic scenarios covering:
-  - Professional payment negotiations
-  - Proper rights disclosures
-  - Harassment and threats
-  - Workplace/neighbor contact threats
-  - False arrest claims
-  - Abusive language
+**Dataset Composition:**
+- **Original files (3):** compliant-call.json, standard-call.json, high-risk-call.json
+- **Extended dataset (20):** call-log-001 through call-log-020
+  - 8 compliant/low-risk calls (1-2/10) - proper FDCPA disclosures, empathetic service
+  - 6 moderate-risk calls (4-6/10) - some pressure/issues but manageable
+  - 6 high-risk/critical calls (7-9/10) - major violations, threats, harassment
+
+**Realistic Scenarios:**
+- Professional payment negotiations
+- Proper rights disclosures and dispute handling
+- Harassment and threats
+- Workplace/neighbor contact threats
+- False legal threats (arrest, garnishment, property seizure)
+- Abusive and condescending language
+- Improper notice and aggressive deadlines
+- Flexible payment arrangements and fee waivers
 
 **Impact:**
-- Better testing coverage
+- Full risk spectrum testing (0-10 range)
+- Validates traffic light color coding (red/orange/yellow/green)
 - Realistic demonstration scenarios
-- Validation of AI analysis accuracy
+- Comprehensive AI analysis accuracy validation
+- Portfolio analytics trend testing
 
 **Files Created:**
-- `sample-files/call-log-001.json` through `call-log-010.json`
-- `sample-files/README.md` (comprehensive documentation)
+- `sample-files/call-log-001.json` through `call-log-020.json`
+- `sample-files/README.md` (comprehensive documentation with risk assessments)
 
 ---
 

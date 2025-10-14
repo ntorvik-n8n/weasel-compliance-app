@@ -150,10 +150,42 @@ git push origin main --force
 
 ## Notes
 
-- Build number incremented: 12 → 13
+- Build number incremented: 12 → 13 → 14
 - Feature branch `feature/weasel-logo` can be deleted if desired
 - All Phase 1 features are complete and tested
 - Ready to begin Phase 2 planning
+
+## Post-Deployment Updates (Build 14)
+
+### Additional Commits After Initial Deployment
+
+**Commit cf10109** - Sample Files & UI Fixes
+- Added 10 new diverse sample call logs (call-log-011 through 020)
+  - 4 low-risk compliant calls (1-2/10)
+  - 3 moderate-risk calls (4-6/10) with yellow indicators
+  - 3 high/critical-risk calls (7-9/10)
+- Fixed `SimpleFileList.tsx` risk score color thresholds
+  - Now properly displays: Red (>=7), Orange (>=5), Yellow (>=3), Green (<3)
+  - Ensures traffic light theme consistency across all components
+- Updated `sample-files/README.md` to document all 23 sample files
+- Total test dataset: 23 files covering full risk spectrum (0-10)
+
+**Commit 08f3cfb** - Next.js 15 Compatibility Fix
+- Updated combined API route params for Next.js 15.5.4
+- Changed params type to `Promise<{ filename: string }>`
+- Added await to params destructuring
+
+**Commit cf10109** - Removed Incomplete Combined Route
+- Removed `app/api/files/[filename]/complete/route.ts`
+- Route was using non-existent `downloadFileContent` method
+- Actual method is `downloadFile` which returns Buffer
+- Will be re-implemented in Phase 2 with proper BlobStorageService updates
+
+### Final Build State
+- **Build Number:** 14
+- **Commit:** cf10109
+- **Sample Files:** 23 total (3 original + 20 extended dataset)
+- **Status:** All builds passing, deployment successful
 
 ## Contributors
 - Development: AI Assistant (GitHub Copilot)

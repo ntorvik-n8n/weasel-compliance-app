@@ -206,6 +206,26 @@ Add to GitHub Actions:
 5. **Rollback plan** - revert Git commit if issues
 
 ---
+
+## Implementation Notes
+
+### Combined Endpoint Attempt (2025-10-14)
+**Status:** ❌ Removed (Build 14)
+
+Initial implementation of `/api/files/[filename]/complete/route.ts` was created but removed due to:
+- Used non-existent `downloadFileContent` method on `BlobStorageService`
+- Actual method is `downloadFile()` which returns `Buffer`, not parsed JSON
+- Requires refactoring `BlobStorageService` to add new method or change approach
+
+**Action Required Before Re-implementing:**
+1. Add `downloadFileContent()` method to `BlobStorageService` that returns parsed JSON
+2. OR update combined endpoint to handle Buffer → JSON parsing
+3. Test with Next.js 15 async params pattern
+4. Verify error handling for missing/corrupt files
+
+**Code Reference:** See commit `08f3cfb` (later removed in `cf10109`)
+
+---
 **Created:** October 14, 2025  
 **Status:** 🟡 Planning  
 **Owner:** Development Team

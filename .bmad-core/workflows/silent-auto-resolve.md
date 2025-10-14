@@ -14,7 +14,7 @@ estimatedTime: 15-120 minutes (variable based on findings)
 autonomyLevel: maximum
 userInputRequired: none
 reportingMode: completion-only
-projectContext: Weasel - Collections Call Monitor (Next.js 15 + Anthropic + Azure)
+projectContext: Weasel Compliance Monitor (Next.js 15 + Anthropic + Azure)
 ```
 
 ## Overview

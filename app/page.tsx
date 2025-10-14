@@ -25,7 +25,7 @@ function HomePageContent() {
         <div className="bg-dark-surface border-b border-dark-border px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <WeaselLogo size={48} />
-            <h1 className="text-2xl font-bold text-dark-text-primary">Weasel - Compliance Monitor</h1>
+            <h1 className="text-2xl font-bold text-dark-text-primary">Weasel Compliance Monitor</h1>
           </div>
           <VersionBadge />
         </div>

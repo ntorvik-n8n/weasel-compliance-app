@@ -1,5 +1,5 @@
 # Tech Stack
-# Weasel - Collections Call Monitor App
+# Weasel Compliance Monitor App
 
 ## Frontend Stack
 
