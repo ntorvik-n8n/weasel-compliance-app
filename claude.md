@@ -498,7 +498,7 @@ npm run format
 
 1. **Increment Build Number**
    ```bash
-   npm run increment-build
+   npm run version:bump
    ```
    - This updates `public/build.json` with new build number and timestamp
    - Build number is displayed in the app footer
