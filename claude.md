@@ -29,7 +29,7 @@ AI-powered monitoring tool that analyzes debt collection calls for FDCPA (Fair D
 - **API Routes:** Next.js 15 API routes (serverless functions, Azure Functions compatible)
 - **AI Integration:** Anthropic Claude API (@anthropic-ai/sdk 0.65.0) - Claude-3-Haiku for fast analysis
 - **File Storage:** Azure Blob Storage (@azure/storage-blob 12.28.0)
-  - Date-partitioned structure (YYYY/MM/DD)
+  - Flat storage structure (simplified for Azure deployment)
   - Separate containers: raw, processed, backups
 - **Monitoring:** Azure Application Insights (optional)
 - **Security:** Environment-based secrets management
@@ -212,18 +212,25 @@ Expected structure for uploaded JSON files:
 ## Azure Blob Storage Structure
 
 ```
-/call-logs/
-  /raw/                           # Original uploaded files
-    /2024/10/09/                  # Date-based organization
-      chatlog1.json
-      chatlog1_001.json           # Collision resolution
-  /processed/                     # AI-analyzed files
-    /2024/10/09/
-      chatlog1_analysis.json
-  /backups/                       # Backups before replacement
-    /2024/10/09/
-      chatlog1_backup_20251009_143027.json
+Containers:
+/raw/                             # Original uploaded files (flat structure)
+  chatlog1.json
+  chatlog1_001.json               # Collision resolution
+  standard-call.json
+
+/processed/                       # AI-analyzed files (flat structure)
+  chatlog1.json                   # Analysis results
+  standard-call.json
+
+/backups/                         # Backups before replacement
+  chatlog1_backup_20251014_143027.json
 ```
+
+**Note:** Simplified from date-partitioned (YYYY/MM/DD) to flat structure for:
+- Better Azure serverless compatibility
+- Simpler file lookups and management
+- Reduced API complexity
+- No data migration needed (all test files in sample-files/)
 
 ---
 
@@ -477,24 +484,36 @@ npm run format
 
 ## Recent Changes & Important Notes
 
+### October 14, 2025 - Storage Architecture Simplification
+**Major Refactoring:**
+- ✅ **Removed date partitioning** - Simplified from `YYYY/MM/DD/` to flat file structure
+- ✅ **Updated all blob storage methods** - Removed date parameters throughout codebase
+- ✅ **Simplified container names** - Changed from `call-logs-raw` to `raw`, `call-logs-processed` to `processed`
+- ✅ **Updated all API routes** - Removed uploadedAt parameter requirements
+- ✅ **Build verified** - All TypeScript compilation successful
+
+**Benefits:**
+- Simpler file lookups (no date calculation needed)
+- Better Azure serverless function compatibility
+- Eliminates frontend/backend date synchronization issues
+- Reduced code complexity across 12 files
+- No data migration required (test files in sample-files/)
+
+**Files Modified:**
+- `lib/azure/blobStorageClient.ts` - Core refactoring (getDateBasedPath → getFilePath)
+- All API routes: upload, process, files, analysis, admin
+- Environment configuration (.env.example)
+
 ### October 13, 2025 - Next.js 15 Migration & Fixes
 **Critical Changes:**
-- ✅ **Removed `output: 'export'` from next.config.js** - Was incompatible with API routes, causing 500 errors
-- ✅ **Updated all API routes for Next.js 15** - Params now properly awaited as `Promise<{ filename: string }>`
-- ✅ **Removed deprecated `swcMinify` option** - No longer needed in Next.js 15
-- ✅ **Fixed file listing functionality** - Files now properly displayed after upload
-- ✅ **Azure SWA Configuration** - API routes work correctly with Azure Static Web Apps
+- ✅ **Removed `output: 'export'` from next.config.js** - Was incompatible with API routes
+- ✅ **Updated all API routes for Next.js 15** - Params properly awaited
+- ✅ **Azure SWA Configuration** - API routes work with Azure Static Web Apps
 
 **Technical Details:**
-- Date-partitioned storage: Files stored as `YYYY/MM/DD/filename.json`
-- Multiple containers: `call-logs-raw`, `call-logs-processed`, `call-logs-backups`
-- Analysis runs in background via fire-and-forget pattern
+- Multiple containers: `raw`, `processed`, `backups`
+- Analysis runs in background with proper await in Azure context
 - Status polling API for real-time updates
-
-**Known Considerations:**
-- Files with same name can exist in different date partitions
-- Blob storage API includes date verification for extra safety
-- Analysis results cached in processed container to avoid re-analysis
 
 ### Configuration Notes
 **next.config.js:**
@@ -506,9 +525,9 @@ npm run format
 ```bash
 ANTHROPIC_API_KEY=sk-ant-...
 AZURE_STORAGE_CONNECTION_STRING=DefaultEndpointsProtocol=...
-AZURE_STORAGE_CONTAINER_RAW=call-logs-raw
-AZURE_STORAGE_CONTAINER_PROCESSED=call-logs-processed
-AZURE_STORAGE_CONTAINER_BACKUPS=call-logs-backups
+AZURE_STORAGE_CONTAINER_RAW=raw
+AZURE_STORAGE_CONTAINER_PROCESSED=processed
+AZURE_STORAGE_CONTAINER_BACKUPS=backups
 ```
 
 ---
@@ -531,4 +550,4 @@ For complete details on all features, user stories, technical architecture, and 
 
 ---
 
-*Last Updated: 2025-10-13 - Next.js 15 Migration Complete*
+*Last Updated: 2025-10-14 - Storage Architecture Simplified*
