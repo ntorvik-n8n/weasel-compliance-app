@@ -21,13 +21,11 @@ export async function DELETE() {
 
     for (const file of allFiles) {
       try {
-        if (file.uploadedAt) {
-          const uploadDate = new Date(file.uploadedAt);
-          await blobService.deleteFile(file.name, uploadDate, 'raw');
-          await blobService.deleteFile(file.name, uploadDate, 'processed').catch(() => {});
-          successCount++;
-          console.log(`[Clear Storage] Deleted: ${file.name}`);
-        }
+        // Delete from both raw and processed containers (flat structure)
+        await blobService.deleteFile(file.name, 'raw');
+        await blobService.deleteFile(file.name, 'processed').catch(() => {});
+        successCount++;
+        console.log(`[Clear Storage] Deleted: ${file.name}`);
       } catch (error) {
         failCount++;
         console.error(`[Clear Storage] Failed to delete ${file.name}:`, error);

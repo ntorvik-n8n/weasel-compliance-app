@@ -13,14 +13,14 @@ export async function POST(request: NextRequest) {
     const statusUpdates = [];
 
     for (const file of files) {
-      const { name, uploadedAt } = file;
-      if (!name || !uploadedAt) {
-        console.warn('Skipping file with missing name or uploadedAt:', file);
+      const { name } = file;
+      if (!name) {
+        console.warn('Skipping file with missing name:', file);
         continue;
       }
 
-      const uploadDate = new Date(uploadedAt);
-      const metadata = await blobService.getFileMetadata(name, uploadDate, 'raw');
+      // Flat structure - no date parameter needed
+      const metadata = await blobService.getFileMetadata(name, 'raw');
 
       if (metadata) {
         statusUpdates.push({

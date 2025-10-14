@@ -8,18 +8,12 @@ export async function GET(
   try {
     const { filename: rawFilename } = await params;
     const filename = decodeURIComponent(rawFilename);
-    const uploadedAt = request.nextUrl.searchParams.get('uploadedAt');
 
-    if (!uploadedAt) {
-      return NextResponse.json({ error: 'Missing uploadedAt parameter' }, { status: 400 });
-    }
-
-    // Use Azure Blob Storage to download the file
+    // Use Azure Blob Storage to download the file (flat structure)
     const blobService = getBlobStorageService();
-    const uploadDate = new Date(uploadedAt);
 
     try {
-      const fileBuffer = await blobService.downloadFile(filename, uploadDate, 'raw');
+      const fileBuffer = await blobService.downloadFile(filename, 'raw');
       const fileContent = fileBuffer.toString('utf-8');
       const callData = JSON.parse(fileContent);
 
@@ -50,11 +44,7 @@ export async function PATCH(
     const searchParams = request.nextUrl.searchParams;
 
     // Parse query parameters
-    const dateParam = searchParams.get('date');
     const containerType = searchParams.get('containerType') as 'raw' | 'processed' | 'backups' || 'raw';
-
-    // Parse date or use today
-    const date = dateParam ? new Date(dateParam) : new Date();
 
     // Parse request body
     const body = await request.json();
@@ -62,8 +52,8 @@ export async function PATCH(
     // Get Blob Storage service
     const blobService = getBlobStorageService();
 
-    // Check if file exists
-    const exists = await blobService.fileExists(filename, date, containerType);
+    // Check if file exists (flat structure)
+    const exists = await blobService.fileExists(filename, containerType);
 
     if (!exists) {
       return NextResponse.json(
@@ -73,7 +63,7 @@ export async function PATCH(
     }
 
     // Update metadata
-    await blobService.updateMetadata(filename, date, body, containerType);
+    await blobService.updateMetadata(filename, body, containerType);
 
     return NextResponse.json({
       success: true,
@@ -100,24 +90,18 @@ export async function DELETE(
 ) {
   const { filename: rawFilename } = await params;
   const filename = decodeURIComponent(rawFilename);
-  const uploadedAt = request.nextUrl.searchParams.get('uploadedAt');
-
-  if (!uploadedAt) {
-    return NextResponse.json({ error: 'Missing uploadedAt parameter' }, { status: 400 });
-  }
 
   try {
     const blobService = getBlobStorageService();
-    const uploadDate = new Date(uploadedAt);
 
-    console.log(`Deleting file from Azure: ${filename} uploaded at ${uploadedAt}`);
+    console.log(`Deleting file from Azure: ${filename}`);
 
-    // Delete from both raw and processed containers (processed may not exist, that's okay)
-    await blobService.deleteFile(filename, uploadDate, 'raw');
+    // Delete from both raw and processed containers (flat structure)
+    await blobService.deleteFile(filename, 'raw');
 
     // Try to delete from processed container too (won't fail if not found)
     try {
-      await blobService.deleteFile(filename, uploadDate, 'processed');
+      await blobService.deleteFile(filename, 'processed');
     } catch (processedError) {
       console.log(`No processed file to delete for ${filename} (this is normal)`);
     }
@@ -125,8 +109,7 @@ export async function DELETE(
     return NextResponse.json({
       success: true,
       message: `${filename} deleted successfully.`,
-      filename: filename,
-      uploadedAt: uploadedAt
+      filename: filename
     });
 
   } catch (error) {

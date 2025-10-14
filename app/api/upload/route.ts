@@ -23,10 +23,10 @@ export async function POST(request: NextRequest) {
     const callLogData: CallLog = JSON.parse(buffer.toString());
 
     const blobService = getBlobStorageService();
-    const uploadedAt = new Date(); // Use a single Date object
+    const uploadedAt = new Date(); // Timestamp for metadata
 
-    // Use a date-based path for the blob
-    const exists = await blobService.fileExists(file.name, uploadedAt);
+    // Check if file exists (flat structure - no date path)
+    const exists = await blobService.fileExists(file.name);
     if (exists) {
       return NextResponse.json(
         { collision: true, filename: file.name },
@@ -67,15 +67,12 @@ export async function POST(request: NextRequest) {
     const processUrl = new URL(`/api/process/${encodeURIComponent(file.name)}`, baseUrl);
 
     // Trigger processing (don't await - let it run separately)
-    // The process endpoint will now properly await the full analysis
+    // The process endpoint will properly await the full analysis
     fetch(processUrl.toString(), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          uploadedAt: uploadedAt.toISOString(),
-        }),
     }).catch(err => {
       // Log but don't fail the upload if processing trigger fails
       console.error(`Failed to trigger analysis for ${file.name}:`, err);

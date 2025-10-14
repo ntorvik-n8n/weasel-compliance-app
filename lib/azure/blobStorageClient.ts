@@ -117,13 +117,13 @@ export class BlobStorageService {
   }
 
   /**
-   * Generate date-based path: /YYYY/MM/DD/filename
+   * Get path for file (flat structure - no date partitioning)
+   * @param filename The name of the file
+   * @returns The filename as-is (flat storage)
    */
-  private getDateBasedPath(filename: string, date: Date = new Date()): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}/${month}/${day}/${filename}`;
+  private getFilePath(filename: string): string {
+    // Simplified: no date partitioning, just use filename directly
+    return filename;
   }
 
   /**
@@ -137,7 +137,7 @@ export class BlobStorageService {
   ): Promise<UploadResult> {
     try {
       const container = this.containers[containerType];
-      const path = this.getDateBasedPath(filename);
+      const path = this.getFilePath(filename);
       const blobClient = container.getBlockBlobClient(path);
 
       // Upload file with metadata using retry logic
@@ -169,12 +169,11 @@ export class BlobStorageService {
    */
   async fileExists(
     filename: string,
-    date: Date = new Date(),
     containerType: 'raw' | 'processed' | 'backups' = 'raw'
   ): Promise<boolean> {
     try {
       const container = this.containers[containerType];
-      const path = this.getDateBasedPath(filename, date);
+      const path = this.getFilePath(filename);
       const blobClient = container.getBlockBlobClient(path);
       return await blobClient.exists();
     } catch (error) {
@@ -188,12 +187,11 @@ export class BlobStorageService {
    */
   async getFileMetadata(
     filename: string,
-    date: Date = new Date(),
     containerType: 'raw' | 'processed' | 'backups' = 'raw'
   ): Promise<FileMetadata | null> {
     try {
       const container = this.containers[containerType];
-      const path = this.getDateBasedPath(filename, date);
+      const path = this.getFilePath(filename);
       const blobClient = container.getBlockBlobClient(path);
 
       const properties = await blobClient.getProperties();
@@ -214,12 +212,11 @@ export class BlobStorageService {
    */
   async downloadFile(
     filename: string,
-    date: Date = new Date(),
     containerType: 'raw' | 'processed' | 'backups' = 'raw'
   ): Promise<Buffer> {
     try {
       const container = this.containers[containerType];
-      const path = this.getDateBasedPath(filename, date);
+      const path = this.getFilePath(filename);
       const blobClient = container.getBlockBlobClient(path);
 
       const downloadResponse = await blobClient.download();
@@ -332,17 +329,16 @@ export class BlobStorageService {
    * Copy file to backup location
    */
   async backupFile(
-    filename: string,
-    sourceDate: Date = new Date()
+    filename: string
   ): Promise<string> {
     try {
-      const sourcePath = this.getDateBasedPath(filename, sourceDate);
+      const sourcePath = this.getFilePath(filename);
       const sourceBlob = this.containers.raw.getBlockBlobClient(sourcePath);
 
       // Generate backup filename with timestamp
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
       const backupFilename = filename.replace('.json', `_backup_${timestamp}.json`);
-      const backupPath = this.getDateBasedPath(backupFilename, sourceDate);
+      const backupPath = this.getFilePath(backupFilename);
       const backupBlob = this.containers.backups.getBlockBlobClient(backupPath);
 
       // Copy blob
@@ -360,13 +356,12 @@ export class BlobStorageService {
    */
   async updateMetadata(
     filename: string,
-    date: Date = new Date(),
     metadata: Partial<FileMetadata>,
     containerType: 'raw' | 'processed' | 'backups' = 'raw'
   ): Promise<void> {
     try {
       const container = this.containers[containerType];
-      const path = this.getDateBasedPath(filename, date);
+      const path = this.getFilePath(filename);
       const blobClient = container.getBlockBlobClient(path);
 
       // Get existing metadata
@@ -394,12 +389,11 @@ export class BlobStorageService {
    */
   async deleteFile(
     filename: string,
-    date: Date = new Date(),
     containerType: 'raw' | 'processed' | 'backups' = 'raw'
   ): Promise<void> {
     try {
       const container = this.containers[containerType];
-      const path = this.getDateBasedPath(filename, date);
+      const path = this.getFilePath(filename);
       const blobClient = container.getBlockBlobClient(path);
 
       // Check if blob exists first
@@ -426,8 +420,8 @@ export class BlobStorageService {
   /**
    * Upload analysis result to Azure Blob Storage
    */
-  async uploadAnalysisResult(filename: string, analysisData: object, date: Date = new Date()): Promise<void> {
-    const path = this.getDateBasedPath(filename, date);
+  async uploadAnalysisResult(filename: string, analysisData: object): Promise<void> {
+    const path = this.getFilePath(filename);
     const blockBlobClient = this.containers.processed.getBlockBlobClient(path);
     const data = JSON.stringify(analysisData, null, 2);
     await retryBlobOperation(
@@ -527,9 +521,9 @@ export function getBlobStorageService(): BlobStorageService {
   const config: BlobStorageConfig = {
     connectionString,
     containers: {
-      raw: process.env.AZURE_STORAGE_CONTAINER_RAW || 'call-logs-raw',
-      processed: process.env.AZURE_STORAGE_CONTAINER_PROCESSED || 'call-logs-processed',
-      backups: process.env.AZURE_STORAGE_CONTAINER_BACKUPS || 'call-logs-backups',
+      raw: process.env.AZURE_STORAGE_CONTAINER_RAW || 'raw',
+      processed: process.env.AZURE_STORAGE_CONTAINER_PROCESSED || 'processed',
+      backups: process.env.AZURE_STORAGE_CONTAINER_BACKUPS || 'backups',
     },
   };
 

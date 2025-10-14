@@ -8,19 +8,13 @@ export async function GET(
   try {
     const { filename: rawFilename } = await params;
     const filename = decodeURIComponent(rawFilename);
-    const uploadedAt = request.nextUrl.searchParams.get('uploadedAt');
-
-    if (!uploadedAt) {
-      return NextResponse.json({ error: 'Missing uploadedAt parameter' }, { status: 400 });
-    }
 
     const blobService = getBlobStorageService();
-    const uploadDate = new Date(uploadedAt);
 
     try {
-      // Try to get analysis from processed container first
+      // Try to get analysis from processed container first (flat structure)
       try {
-        const analysisBuffer = await blobService.downloadFile(filename, uploadDate, 'processed');
+        const analysisBuffer = await blobService.downloadFile(filename, 'processed');
         const analysisData = JSON.parse(analysisBuffer.toString('utf-8'));
         return NextResponse.json(analysisData);
       } catch (processedError) {
@@ -29,7 +23,7 @@ export async function GET(
       }
 
       // Download the raw call log file
-      const fileBuffer = await blobService.downloadFile(filename, uploadDate, 'raw');
+      const fileBuffer = await blobService.downloadFile(filename, 'raw');
       const callData = JSON.parse(fileBuffer.toString('utf-8'));
 
       // Generate analysis based on actual file content
@@ -39,7 +33,6 @@ export async function GET(
         // High risk call with multiple serious violations
         mockAnalysis = {
           filename,
-          uploadedAt,
           riskScore: 9.2,
           fdcpaScore: 2.1,
           violations: [
@@ -84,7 +77,6 @@ export async function GET(
         // Compliant call with no violations
         mockAnalysis = {
           filename,
-          uploadedAt,
           riskScore: 1.2,
           fdcpaScore: 9.8,
           violations: [],
@@ -99,7 +91,6 @@ export async function GET(
         // Standard call with moderate issues (default for standard-call.json and others)
         mockAnalysis = {
           filename,
-          uploadedAt,
           riskScore: 4.5,
           fdcpaScore: 6.8,
           violations: [
@@ -124,7 +115,7 @@ export async function GET(
 
       // Save the generated analysis to the processed container for future requests
       try {
-        await blobService.uploadAnalysisResult(filename, mockAnalysis, uploadDate);
+        await blobService.uploadAnalysisResult(filename, mockAnalysis);
         console.log(`Analysis saved to processed container for ${filename}`);
       } catch (saveError) {
         console.warn(`Failed to save analysis to processed container:`, saveError);
