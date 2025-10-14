@@ -12,12 +12,18 @@ const versionData = JSON.parse(fs.readFileSync(versionPath, 'utf-8'));
 // Increment build number
 const newBuild = (parseInt(versionData.build) + 1).toString();
 
+const commitArg = process.argv[2];
+
 // Get git commit hash
 let commit = 'unknown';
-try {
-  commit = execSync('git rev-parse --short HEAD', { encoding: 'utf-8' }).trim();
-} catch (e) {
-  console.warn('Could not get git commit hash');
+if (commitArg) {
+  commit = commitArg;
+} else {
+  try {
+    commit = execSync('git rev-parse --short HEAD', { encoding: 'utf-8' }).trim();
+  } catch (e) {
+    console.warn('Could not get git commit hash');
+  }
 }
 
 // Update version data
