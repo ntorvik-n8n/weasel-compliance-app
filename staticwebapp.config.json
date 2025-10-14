@@ -2,6 +2,27 @@
   "platform": {
     "apiRuntime": "node:20"
   },
+  "navigationFallback": {
+    "rewrite": "/index.html"
+  },
+  "responseOverrides": {
+    "400": {
+      "rewrite": "/index.html",
+      "statusCode": 200
+    },
+    "401": {
+      "rewrite": "/index.html",
+      "statusCode": 200
+    },
+    "403": {
+      "rewrite": "/index.html",
+      "statusCode": 200
+    },
+    "404": {
+      "rewrite": "/index.html",
+      "statusCode": 200
+    }
+  },
   "mimeTypes": {
     ".json": "application/json"
   },
@@ -9,6 +30,11 @@
     "content-security-policy": "default-src 'self' https://*.azurestaticapps.net https://*.anthropic.com https://*.blob.core.windows.net; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://*.azurestaticapps.net https://api.anthropic.com https://*.blob.core.windows.net"
   },
   "routes": [
+    {
+      "route": "/api/process/*",
+      "allowedRoles": ["anonymous"],
+      "methods": ["POST"]
+    },
     {
       "route": "/api/*",
       "allowedRoles": ["anonymous"]

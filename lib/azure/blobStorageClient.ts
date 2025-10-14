@@ -117,13 +117,13 @@ export class BlobStorageService {
   }
 
   /**
-   * Generate date-based path: /YYYY/MM/DD/filename
+   * Generate simple flat path (no date partitioning)
+   * Simplified for more reliable lookups in Azure SWA
    */
   private getDateBasedPath(filename: string, date: Date = new Date()): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}/${month}/${day}/${filename}`;
+    // Return flat structure - just the filename
+    // This eliminates date-related path issues and simplifies lookups
+    return filename;
   }
 
   /**
@@ -203,7 +203,13 @@ export class BlobStorageService {
       }
 
       return this.deserializeMetadata(properties.metadata);
-    } catch (error) {
+    } catch (error: any) {
+      // Don't log 404 errors - it's normal for files to not exist during status checks
+      if (error?.statusCode === 404 || error?.code === 'BlobNotFound') {
+        return null;
+      }
+
+      // Log other errors as they may indicate real issues
       console.error('Error getting file metadata:', error);
       return null;
     }
@@ -248,23 +254,8 @@ export class BlobStorageService {
       const containerType = options.containerType || 'raw';
       const container = this.containers[containerType];
 
-      // Build prefix based on date filter
-      let prefix = '';
-      if (options.dateFilter) {
-        const { year, month, day } = options.dateFilter;
-        if (year) {
-          prefix += `${year}/`;
-          if (month) {
-            prefix += `${String(month).padStart(2, '0')}/`;
-            if (day) {
-              prefix += `${String(day).padStart(2, '0')}/`;
-            }
-          }
-        }
-      }
-      if (options.prefix) {
-        prefix += options.prefix;
-      }
+      // Use simple prefix filtering (no date partitioning)
+      const prefix = options.prefix || undefined;
 
       const files: PaginatedFileList['files'] = [];
       const maxResults = options.maxResults || 1000;
@@ -304,8 +295,9 @@ export class BlobStorageService {
 
         // Use metadata from listBlobsFlat response directly (no extra getProperties call)
         // listBlobsFlat includes basic metadata in blob.metadata
+        // With flat structure, blob.name IS the filename (no path parsing needed)
         files.push({
-          name: blob.name.split('/').pop() || blob.name,
+          name: blob.name,
           path: blob.name,
           size: blob.properties.contentLength || 0,
           uploadedAt: blob.properties.createdOn?.toISOString() || '',
