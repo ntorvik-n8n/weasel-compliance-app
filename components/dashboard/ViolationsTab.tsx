@@ -9,6 +9,51 @@ interface ViolationsTabProps {
 
 export function ViolationsTab({ analysis }: ViolationsTabProps) {
   const [expandedViolation, setExpandedViolation] = useState<number | null>(null);
+  const [severityCycleIndex, setSeverityCycleIndex] = useState<Record<string, number>>({
+    critical: 0,
+    high: 0,
+    medium: 0,
+    low: 0,
+  });
+
+  // Get violations grouped by severity
+  const violationsBySeverity = {
+    critical: analysis.violations.map((v, idx) => ({ ...v, originalIndex: idx })).filter(v => v.severity === 'critical'),
+    high: analysis.violations.map((v, idx) => ({ ...v, originalIndex: idx })).filter(v => v.severity === 'high'),
+    medium: analysis.violations.map((v, idx) => ({ ...v, originalIndex: idx })).filter(v => v.severity === 'medium'),
+    low: analysis.violations.map((v, idx) => ({ ...v, originalIndex: idx })).filter(v => v.severity === 'low'),
+  };
+
+  // Handle clicking on severity badge to cycle through violations
+  const handleSeverityClick = (severity: 'critical' | 'high' | 'medium' | 'low') => {
+    const violations = violationsBySeverity[severity];
+    if (violations.length === 0) return;
+
+    const currentIndex = severityCycleIndex[severity];
+    const violation = violations[currentIndex];
+
+    // If this violation is already expanded, move to next one
+    if (expandedViolation === violation.originalIndex) {
+      const nextIndex = (currentIndex + 1) % violations.length;
+      setSeverityCycleIndex(prev => ({ ...prev, [severity]: nextIndex }));
+      
+      // If we cycled back to the beginning, close it, otherwise open next
+      if (nextIndex === 0 && currentIndex === violations.length - 1) {
+        setExpandedViolation(null);
+      } else {
+        setExpandedViolation(violations[nextIndex].originalIndex);
+      }
+    } else {
+      // Open the current violation
+      setExpandedViolation(violation.originalIndex);
+    }
+
+    // Scroll to the violation
+    setTimeout(() => {
+      const element = document.getElementById(`violation-${violation.originalIndex}`);
+      element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 100);
+  };
 
   // Get violation display info
   const getViolationInfo = (type: string) => {
@@ -79,10 +124,114 @@ export function ViolationsTab({ analysis }: ViolationsTabProps) {
   };
 
   return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
+    <div className="flex flex-col h-full">
+      {/* Sticky Summary Stats at Top */}
+      {analysis.violations.length > 0 && (
+        <div className="sticky top-0 z-10 bg-dark-surface border-b border-dark-border p-4 shadow-lg">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-semibold text-white">📊 Violation Summary</h3>
+            <div className="text-xs text-text-muted">Click severity to navigate</div>
+          </div>
+          <div className="grid grid-cols-4 gap-3">
+            {/* Critical */}
+            <button
+              onClick={() => handleSeverityClick('critical')}
+              disabled={violationsBySeverity.critical.length === 0}
+              className={`text-center p-3 rounded-lg border-2 transition-all ${
+                violationsBySeverity.critical.length > 0
+                  ? 'border-risk-critical/50 bg-risk-critical/10 hover:bg-risk-critical/20 hover:border-risk-critical cursor-pointer'
+                  : 'border-dark-border bg-dark-elevated/50 cursor-not-allowed opacity-50'
+              }`}
+            >
+              <div className={`text-2xl font-bold ${
+                violationsBySeverity.critical.length > 0 ? 'text-risk-critical' : 'text-text-muted'
+              }`}>
+                {violationsBySeverity.critical.length}
+              </div>
+              <div className="text-xs text-text-muted mt-1">Critical</div>
+              {violationsBySeverity.critical.length > 1 && (
+                <div className="text-xs text-risk-critical mt-1">
+                  {severityCycleIndex.critical + 1}/{violationsBySeverity.critical.length}
+                </div>
+              )}
+            </button>
+
+            {/* High */}
+            <button
+              onClick={() => handleSeverityClick('high')}
+              disabled={violationsBySeverity.high.length === 0}
+              className={`text-center p-3 rounded-lg border-2 transition-all ${
+                violationsBySeverity.high.length > 0
+                  ? 'border-risk-high/50 bg-risk-high/10 hover:bg-risk-high/20 hover:border-risk-high cursor-pointer'
+                  : 'border-dark-border bg-dark-elevated/50 cursor-not-allowed opacity-50'
+              }`}
+            >
+              <div className={`text-2xl font-bold ${
+                violationsBySeverity.high.length > 0 ? 'text-risk-high' : 'text-text-muted'
+              }`}>
+                {violationsBySeverity.high.length}
+              </div>
+              <div className="text-xs text-text-muted mt-1">High</div>
+              {violationsBySeverity.high.length > 1 && (
+                <div className="text-xs text-risk-high mt-1">
+                  {severityCycleIndex.high + 1}/{violationsBySeverity.high.length}
+                </div>
+              )}
+            </button>
+
+            {/* Medium */}
+            <button
+              onClick={() => handleSeverityClick('medium')}
+              disabled={violationsBySeverity.medium.length === 0}
+              className={`text-center p-3 rounded-lg border-2 transition-all ${
+                violationsBySeverity.medium.length > 0
+                  ? 'border-risk-medium/50 bg-risk-medium/10 hover:bg-risk-medium/20 hover:border-risk-medium cursor-pointer'
+                  : 'border-dark-border bg-dark-elevated/50 cursor-not-allowed opacity-50'
+              }`}
+            >
+              <div className={`text-2xl font-bold ${
+                violationsBySeverity.medium.length > 0 ? 'text-risk-medium' : 'text-text-muted'
+              }`}>
+                {violationsBySeverity.medium.length}
+              </div>
+              <div className="text-xs text-text-muted mt-1">Medium</div>
+              {violationsBySeverity.medium.length > 1 && (
+                <div className="text-xs text-risk-medium mt-1">
+                  {severityCycleIndex.medium + 1}/{violationsBySeverity.medium.length}
+                </div>
+              )}
+            </button>
+
+            {/* Low */}
+            <button
+              onClick={() => handleSeverityClick('low')}
+              disabled={violationsBySeverity.low.length === 0}
+              className={`text-center p-3 rounded-lg border-2 transition-all ${
+                violationsBySeverity.low.length > 0
+                  ? 'border-risk-low/50 bg-risk-low/10 hover:bg-risk-low/20 hover:border-risk-low cursor-pointer'
+                  : 'border-dark-border bg-dark-elevated/50 cursor-not-allowed opacity-50'
+              }`}
+            >
+              <div className={`text-2xl font-bold ${
+                violationsBySeverity.low.length > 0 ? 'text-risk-low' : 'text-text-muted'
+              }`}>
+                {violationsBySeverity.low.length}
+              </div>
+              <div className="text-xs text-text-muted mt-1">Low</div>
+              {violationsBySeverity.low.length > 1 && (
+                <div className="text-xs text-risk-low mt-1">
+                  {severityCycleIndex.low + 1}/{violationsBySeverity.low.length}
+                </div>
+              )}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto dark-scrollbar p-6">
+        {/* Header */}
+        <div className="mb-6">
           <h2 className="text-2xl font-bold text-white">
             🚨 {analysis.violations.length} Compliance {analysis.violations.length === 1 ? 'Violation' : 'Violations'} Found
           </h2>
@@ -90,21 +239,23 @@ export function ViolationsTab({ analysis }: ViolationsTabProps) {
             Detailed analysis and remediation suggestions
           </p>
         </div>
-      </div>
 
-      {/* Violations List */}
-      {analysis.violations.length > 0 ? (
-        <div className="space-y-4">
-          {analysis.violations.map((violation, index) => {
-            const info = getViolationInfo(violation.type);
-            const isExpanded = expandedViolation === index;
+        {/* Violations List */}
+        {analysis.violations.length > 0 ? (
+          <div className="space-y-4">
+            {analysis.violations.map((violation, index) => {
+              const info = getViolationInfo(violation.type);
+              const isExpanded = expandedViolation === index;
 
-            return (
-              <div
-                key={index}
-                className={`metric-card border-2 ${info.borderColor}/30 hover:${info.borderColor}/60 transition-all cursor-pointer`}
-                onClick={() => toggleViolation(index)}
-              >
+              return (
+                <div
+                  key={index}
+                  id={`violation-${index}`}
+                  className={`metric-card border-2 ${info.borderColor}/30 hover:${info.borderColor}/60 transition-all cursor-pointer ${
+                    isExpanded ? 'ring-2 ring-badge-pressure' : ''
+                  }`}
+                  onClick={() => toggleViolation(index)}
+                >
                 {/* Header */}
                 <div className="flex items-start justify-between">
                   <div className="flex items-start gap-3 flex-1">
@@ -220,39 +371,7 @@ export function ViolationsTab({ analysis }: ViolationsTabProps) {
           </div>
         </div>
       )}
-
-      {/* Summary Stats */}
-      {analysis.violations.length > 0 && (
-        <div className="metric-card">
-          <h3 className="text-lg font-semibold text-white mb-4">📊 Violation Summary</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-risk-critical">
-                {analysis.violations.filter(v => v.severity === 'critical').length}
-              </div>
-              <div className="text-xs text-text-muted mt-1">Critical</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-risk-high">
-                {analysis.violations.filter(v => v.severity === 'high').length}
-              </div>
-              <div className="text-xs text-text-muted mt-1">High</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-risk-medium">
-                {analysis.violations.filter(v => v.severity === 'medium').length}
-              </div>
-              <div className="text-xs text-text-muted mt-1">Medium</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-risk-low">
-                {analysis.violations.filter(v => v.severity === 'low').length}
-              </div>
-              <div className="text-xs text-text-muted mt-1">Low</div>
-            </div>
-          </div>
-        </div>
-      )}
+      </div>
     </div>
   );
 }
