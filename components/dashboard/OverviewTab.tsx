@@ -28,7 +28,7 @@ export function OverviewTab({ analysis, metadata }: OverviewTabProps) {
       {/* Key Metrics Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {/* Risk Score */}
-        <div className="metric-card">
+        <div className="metric-card text-center">
           <div className="text-xs text-text-muted uppercase tracking-wide mb-2">Risk Score</div>
           <div className={`text-4xl font-bold ${
             analysis.riskScore >= 7 ? 'text-risk-critical' :
@@ -53,7 +53,7 @@ export function OverviewTab({ analysis, metadata }: OverviewTabProps) {
         </div>
 
         {/* FDCPA Score */}
-        <div className="metric-card">
+        <div className="metric-card text-center">
           <div className="text-xs text-text-muted uppercase tracking-wide mb-2">FDCPA Score</div>
           <div className={`text-4xl font-bold ${
             analysis.fdcpaScore >= 7 ? 'text-risk-critical' :
@@ -75,7 +75,7 @@ export function OverviewTab({ analysis, metadata }: OverviewTabProps) {
         </div>
 
         {/* Duration */}
-        <div className="metric-card">
+        <div className="metric-card text-center">
           <div className="text-xs text-text-muted uppercase tracking-wide mb-2">Duration</div>
           <div className="text-4xl font-bold text-white">
             {metadata.callDuration ? formatDuration(metadata.callDuration).split(':')[0] : '0'}
@@ -89,7 +89,7 @@ export function OverviewTab({ analysis, metadata }: OverviewTabProps) {
         </div>
 
         {/* Violations */}
-        <div className="metric-card">
+        <div className="metric-card text-center">
           <div className="text-xs text-text-muted uppercase tracking-wide mb-2">Violations</div>
           <div className={`text-4xl font-bold ${
             analysis.violations.length >= 3 ? 'text-risk-critical' :
