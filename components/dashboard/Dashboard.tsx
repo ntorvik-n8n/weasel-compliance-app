@@ -115,7 +115,7 @@ export function Dashboard() {
         <div className="text-center max-w-md bg-dark-surface rounded-card p-8 border border-dark-border">
           <h3 className="text-lg font-medium text-dark-text-primary mb-2">No Analysis Available</h3>
           <p className="text-sm text-dark-text-secondary">
-            This call hasn't been analyzed yet or the analysis failed to load.
+            This call hasn&apos;t been analyzed yet or the analysis failed to load.
           </p>
         </div>
       </div>

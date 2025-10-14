@@ -310,7 +310,7 @@ export function ViolationsTab({ analysis }: ViolationsTabProps) {
                       </div>
                       <div className="bg-dark-bg p-4 rounded-lg border border-risk-critical/30">
                         <p className="text-sm text-white leading-relaxed italic">
-                          "{violation.quote}"
+                          &quot;{violation.quote}&quot;
                         </p>
                       </div>
                     </div>
@@ -335,7 +335,7 @@ export function ViolationsTab({ analysis }: ViolationsTabProps) {
                         </div>
                         <div className="bg-risk-none/10 p-4 rounded-lg border border-risk-none/30">
                           <p className="text-sm text-white leading-relaxed">
-                            "{violation.suggestedAlternative}"
+                            &quot;{violation.suggestedAlternative}&quot;
                           </p>
                         </div>
                       </div>
