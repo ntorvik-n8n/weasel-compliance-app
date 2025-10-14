@@ -10,7 +10,7 @@ export function ActiveUploads() {
   const activeUploads = Array.from(uploads.values());
 
   if (activeUploads.length === 0) {
-    return <p className="text-sm text-gray-500">No active uploads.</p>;
+    return <p className="text-sm text-dark-text-muted">No active uploads.</p>;
   }
 
   return (

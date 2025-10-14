@@ -92,29 +92,30 @@ export function FileUpload({
       {...getRootProps()} 
       className={`
         p-6 border-2 border-dashed rounded-lg
-        ${isDragActive ? 'border-blue-400 bg-blue-50' : 'border-gray-300'}
+        ${isDragActive ? 'border-badge-pressure bg-badge-pressure/10' : 'border-dark-border'}
         ${isUploading ? 'opacity-50 cursor-wait' : 'cursor-pointer'}
-        hover:border-blue-400 transition-colors
+        hover:border-badge-pressure transition-colors
+        bg-dark-elevated
         ${className}
       `}
     >
       <input {...getInputProps()} />
       <div className="text-center">
         {isDragActive ? (
-          <p className="text-blue-600">Drop the files here...</p>
+          <p className="text-badge-pressure">Drop the files here...</p>
         ) : (
           <>
-            <p className="text-gray-600">
+            <p className="text-dark-text-secondary">
               Drag &amp; drop JSON files here, or click to select files
             </p>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-dark-text-muted mt-1">
               Only JSON files up to {maxSize / 1024 / 1024}MB are accepted
             </p>
           </>
         )}
         {isUploading && (
           <div className="mt-4">
-            <p className="text-blue-600">Uploading...</p>
+            <p className="text-badge-pressure">Uploading...</p>
           </div>
         )}
       </div>
