@@ -61,9 +61,19 @@ export async function POST(request: NextRequest) {
       // The uploadFile method in the provided context uses a date-based path by default
     );
 
-    // Note: Processing will be triggered by the frontend after successful upload
-    // This decouples upload from processing to avoid timeout issues in Azure SWA
-    // where long-running AI analysis can cause the upload request to timeout
+    // Trigger processing asynchronously (fire-and-forget)
+    // Both frontend and backend trigger to support UI uploads and direct API calls
+    // Using fire-and-forget to avoid timeout issues in Azure SWA
+    const requestUrl = new URL(request.url);
+    const baseUrl = `${requestUrl.protocol}//${requestUrl.host}`;
+    const processUrl = new URL(`/api/process/${encodeURIComponent(file.name)}`, baseUrl);
+    
+    fetch(processUrl.toString(), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+    }).catch(err => {
+      console.error(`Failed to trigger analysis for ${file.name}:`, err);
+    });
 
     const responseData: Partial<AppFileMetadata> = {
       name: file.name,
