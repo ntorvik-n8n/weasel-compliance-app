@@ -61,28 +61,9 @@ export async function POST(request: NextRequest) {
       // The uploadFile method in the provided context uses a date-based path by default
     );
 
-    // Trigger analysis pipeline asynchronously
-    const requestUrl = new URL(request.url);
-    const baseUrl = `${requestUrl.protocol}//${requestUrl.host}`;
-    const processUrl = new URL(`/api/process/${encodeURIComponent(file.name)}`, baseUrl);
-
-    // Trigger processing (don't await - let it run separately)
-    // The process endpoint will properly await the full analysis
-    try {
-      const processResponse = await fetch(processUrl.toString(), {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!processResponse.ok) {
-        console.error(`Analysis trigger for ${file.name} responded with status ${processResponse.status}`);
-      }
-    } catch (err) {
-      // Log but don't fail the upload if processing trigger fails
-      console.error(`Failed to trigger analysis for ${file.name}:`, err);
-    }
+    // Note: Processing will be triggered by the frontend after successful upload
+    // This decouples upload from processing to avoid timeout issues in Azure SWA
+    // where long-running AI analysis can cause the upload request to timeout
 
     const responseData: Partial<AppFileMetadata> = {
       name: file.name,

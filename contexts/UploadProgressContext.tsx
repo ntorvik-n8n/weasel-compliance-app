@@ -86,6 +86,25 @@ export function UploadProgressProvider({ children }: { children: ReactNode }) {
       xhr.onload = async () => {
         if (xhr.status >= 200 && xhr.status < 300) {
           updateState(fileId, 'complete');
+          
+          // Trigger processing asynchronously after successful upload
+          try {
+            const responseData = JSON.parse(xhr.responseText);
+            const filename = responseData.file?.name || file.name;
+            
+            // Call the process endpoint (fire-and-forget, don't await)
+            fetch(`/api/process/${encodeURIComponent(filename)}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            }).catch(err => {
+              console.error(`Failed to trigger analysis for ${filename}:`, err);
+            });
+          } catch (err) {
+            console.error('Failed to trigger processing:', err);
+          }
+          
           // Trigger callback to refresh file list
           if (onComplete) {
             onComplete();
