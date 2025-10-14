@@ -277,6 +277,12 @@ export class BlobStorageService {
           break;
         }
 
+        // Skip blobs with slashes (old date-partitioned structure)
+        if (blob.name.includes('/')) {
+          console.warn(`Skipping old date-partitioned blob: ${blob.name}`);
+          continue;
+        }
+
         // Skip blobs that don't have content length (likely deleted/corrupted)
         if (!blob.properties.contentLength || blob.properties.contentLength === 0) {
           console.warn(`Skipping blob with no content: ${blob.name}`);
@@ -301,8 +307,9 @@ export class BlobStorageService {
 
         // Use metadata from listBlobsFlat response directly (no extra getProperties call)
         // listBlobsFlat includes basic metadata in blob.metadata
+        // Note: blob.name is already the filename (flat structure, no slashes)
         files.push({
-          name: blob.name.split('/').pop() || blob.name,
+          name: blob.name,
           path: blob.name,
           size: blob.properties.contentLength || 0,
           uploadedAt: blob.properties.createdOn?.toISOString() || '',
