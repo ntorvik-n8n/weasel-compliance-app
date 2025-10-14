@@ -32,12 +32,17 @@ export async function POST(
 
 async function processAnalysis(filename: string) {
   const blobService = getBlobStorageService();
+  const processStartedAt = new Date().toISOString();
 
   try {
     console.log(`[Process] Starting analysis for ${filename}`);
 
     // 1. Update status to 'processing'
-    await blobService.updateMetadata(filename, { status: 'processing' });
+    await blobService.updateMetadata(filename, {
+      status: 'processing',
+      processingStartedAt: processStartedAt,
+      errorMessage: '',
+    });
     console.log(`[Process] Status updated to 'processing' for ${filename}`);
 
     // 2. Get file content
@@ -59,10 +64,14 @@ async function processAnalysis(filename: string) {
     console.log(`[Process] Analysis result uploaded to processed container for ${filename}`);
 
     // 5. Update the original file's metadata with the final status and result pointer
+    const processCompletedAt = new Date().toISOString();
+
     await blobService.updateMetadata(filename, {
-        status: 'analyzed',
-        riskScore: String(analysisResult.riskScore),
-        // Full analysis stored in processed container
+      status: 'analyzed',
+      riskScore: String(analysisResult.riskScore),
+      processingCompletedAt: processCompletedAt,
+      errorMessage: '',
+      // Full analysis stored in processed container
     });
     console.log(`[Process] ✅ Analysis completed successfully for ${filename}`);
 
@@ -74,8 +83,9 @@ async function processAnalysis(filename: string) {
 
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     await blobService.updateMetadata(filename, {
-        status: 'error',
-        errorMessage,
+      status: 'error',
+      errorMessage,
+      processingCompletedAt: new Date().toISOString(),
     });
     console.error(`[Process] Status updated to 'error' for ${filename} with message: ${errorMessage}`);
   }

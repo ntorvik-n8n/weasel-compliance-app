@@ -1,6 +1,5 @@
 import { BlobServiceClient, ContainerClient, BlockBlobClient } from '@azure/storage-blob';
 import { retryBlobOperation } from './retryPolicy';
-import type { FileStatus } from '@/types/fileManagement';
 
 /**
  * Configuration for Azure Blob Storage
@@ -88,6 +87,27 @@ export class BlobStorageService {
     processed: ContainerClient;
     backups: ContainerClient;
   };
+
+  private normalizeMetadataKeys(metadata?: Record<string, string>): Record<string, string> {
+    if (!metadata) {
+      return {};
+    }
+
+    return Object.entries(metadata).reduce<Record<string, string>>((acc, [key, value]) => {
+      const normalizedKey = key.toLowerCase();
+      acc[normalizedKey] = value ?? '';
+      return acc;
+    }, {});
+  }
+
+  private parseNumber(value?: string): number {
+    if (!value) {
+      return 0;
+    }
+
+    const parsed = Number.parseInt(value, 10);
+    return Number.isNaN(parsed) ? 0 : parsed;
+  }
 
   constructor(config: BlobStorageConfig) {
     this.serviceClient = BlobServiceClient.fromConnectionString(
@@ -383,8 +403,11 @@ export class BlobStorageService {
         ...metadata,
       };
 
-      // Set updated metadata
-      await blobClient.setMetadata(this.serializeMetadata(updatedMetadata));
+      // Set updated metadata with retry logic
+      await retryBlobOperation(
+        () => blobClient.setMetadata(this.serializeMetadata(updatedMetadata)),
+        `Update metadata: ${filename}`
+      );
     } catch (error) {
       console.error('Failed to update metadata:', error);
       throw new Error(`Failed to update metadata for: ${filename}`);
@@ -455,24 +478,37 @@ export class BlobStorageService {
    * Azure metadata values must be strings
    */
   private serializeMetadata(metadata: FileMetadata): Record<string, string> {
+    const ensureString = (value: string | undefined | null, fallback = ''): string => {
+      if (value === undefined || value === null) {
+        return fallback;
+      }
+      return value;
+    };
+
+    const ensureNumberString = (value: number | undefined, fallback = '0'): string => {
+      if (typeof value === 'number' && Number.isFinite(value)) {
+        return String(value);
+      }
+      return fallback;
+    };
+
     return {
-      originalFilename: metadata.originalFilename,
-      uploadedAt: metadata.uploadedAt,
-      size: String(metadata.size),
-      uploaderId: metadata.uploaderId || '',
-      status: metadata.status,
-      contentType: metadata.contentType,
-      processingStartedAt: metadata.processingStartedAt || '',
-      processingCompletedAt: metadata.processingCompletedAt || '',
-      errorMessage: metadata.errorMessage || '',
-      // Call log metadata
-      callId: metadata.callId || '',
-      agentName: metadata.agentName || '',
-      agentId: metadata.agentId || '',
-      callDuration: metadata.callDuration || '',
-      callTimestamp: metadata.callTimestamp || '',
-      callOutcome: metadata.callOutcome || '',
-      riskScore: metadata.riskScore || '',
+      originalfilename: ensureString(metadata.originalFilename, 'unknown'),
+      uploadedat: ensureString(metadata.uploadedAt, new Date().toISOString()),
+      size: ensureNumberString(metadata.size, '0'),
+      uploaderid: ensureString(metadata.uploaderId),
+      status: ensureString(metadata.status ?? 'uploaded', 'uploaded'),
+      contenttype: ensureString(metadata.contentType, 'application/json'),
+      processingstartedat: ensureString(metadata.processingStartedAt),
+      processingcompletedat: ensureString(metadata.processingCompletedAt),
+      errormessage: ensureString(metadata.errorMessage),
+      callid: ensureString(metadata.callId),
+      agentname: ensureString(metadata.agentName),
+      agentid: ensureString(metadata.agentId),
+      callduration: ensureString(metadata.callDuration),
+      calltimestamp: ensureString(metadata.callTimestamp),
+      calloutcome: ensureString(metadata.callOutcome),
+      riskscore: ensureString(metadata.riskScore),
     };
   }
 
@@ -480,24 +516,26 @@ export class BlobStorageService {
    * Deserialize metadata from Azure Blob Storage
    */
   private deserializeMetadata(metadata: Record<string, string>): FileMetadata {
+    const normalized = this.normalizeMetadataKeys(metadata);
+
     return {
-      originalFilename: metadata.originalFilename,
-      uploadedAt: metadata.uploadedAt,
-      size: parseInt(metadata.size, 10),
-      uploaderId: metadata.uploaderId || undefined,
-      status: metadata.status as FileMetadata['status'],
-      contentType: metadata.contentType,
-      processingStartedAt: metadata.processingStartedAt || undefined,
-      processingCompletedAt: metadata.processingCompletedAt || undefined,
-      errorMessage: metadata.errorMessage || undefined,
+      originalFilename: normalized.originalfilename || 'unknown',
+      uploadedAt: normalized.uploadedat || new Date().toISOString(),
+      size: this.parseNumber(normalized.size),
+      uploaderId: normalized.uploaderid || undefined,
+      status: (normalized.status as FileMetadata['status']) || 'uploaded',
+      contentType: normalized.contenttype || 'application/json',
+      processingStartedAt: normalized.processingstartedat || undefined,
+      processingCompletedAt: normalized.processingcompletedat || undefined,
+      errorMessage: normalized.errormessage || undefined,
       // Call log metadata
-      callId: metadata.callId || undefined,
-      agentName: metadata.agentName || undefined,
-      agentId: metadata.agentId || undefined,
-      callDuration: metadata.callDuration || undefined,
-      callTimestamp: metadata.callTimestamp || undefined,
-      callOutcome: metadata.callOutcome || undefined,
-      riskScore: metadata.riskScore || undefined,
+      callId: normalized.callid || undefined,
+      agentName: normalized.agentname || undefined,
+      agentId: normalized.agentid || undefined,
+      callDuration: normalized.callduration || undefined,
+      callTimestamp: normalized.calltimestamp || undefined,
+      callOutcome: normalized.calloutcome || undefined,
+      riskScore: normalized.riskscore || undefined,
     };
   }
 

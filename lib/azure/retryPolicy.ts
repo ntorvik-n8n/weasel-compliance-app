@@ -174,13 +174,13 @@ export async function retryBlobOperation<T>(
     backoffMultiplier: 2,
   });
 
-  if (result.success && result.data !== undefined) {
+  if (result.success) {
     if (result.attempts > 1) {
       console.log(
         `${operationName} succeeded after ${result.attempts} attempts (${result.totalDuration}ms)`
       );
     }
-    return result.data;
+    return result.data as T;
   }
 
   throw new Error(
