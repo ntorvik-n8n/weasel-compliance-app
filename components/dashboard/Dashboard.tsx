@@ -193,7 +193,7 @@ export function Dashboard() {
                   {selectedFileTranscript.map((turn, index) => (
                     <div
                       key={index}
-                      className={`flex gap-3 ${turn.speaker === 'client' ? 'justify-start' : 'justify-start'}`}
+                      className="flex gap-3"
                     >
                       <div className={`flex-1 p-3 rounded-lg ${
                         turn.speaker === 'agent' 
