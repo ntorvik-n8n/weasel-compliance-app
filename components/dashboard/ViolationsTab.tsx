@@ -8,7 +8,7 @@ interface ViolationsTabProps {
 }
 
 export function ViolationsTab({ analysis }: ViolationsTabProps) {
-  const [expandedViolation, setExpandedViolation] = useState<number | null>(0);
+  const [expandedViolation, setExpandedViolation] = useState<number | null>(null);
 
   // Get violation display info
   const getViolationInfo = (type: string) => {
