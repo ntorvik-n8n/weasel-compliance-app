@@ -1,6 +1,6 @@
 # 🎨 UI Redesign - Weasel Logo Feature
 
-**Branch:** `feature/ui-redesign-modern-theme`  
+**Branch:** `feature/weasel-logo`  
 **Date:** October 14, 2025  
 **Designer:** Sally (UX Expert)
 
