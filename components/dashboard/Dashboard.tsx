@@ -2,18 +2,22 @@
 
 import React, { useEffect, useCallback } from 'react';
 import { useFileManager } from '@/contexts/FileManagerContext';
-import { AnalysisSummaryCard } from './AnalysisSummaryCard';
+import { Tabs } from '@/components/ui/Tabs';
+import { PortfolioAnalytics } from './PortfolioAnalytics';
+import { OverviewTab } from './OverviewTab';
+import { TranscriptTab } from './TranscriptTab';
+import { ViolationsTab } from './ViolationsTab';
 
 /**
  * Main Dashboard Component
  *
  * Displays a comprehensive view of the selected call log with:
- * - Analysis summary card
- * - Violations list
- * - Interactive transcript
- * - Compliance trend charts
+ * - Portfolio analytics when no file selected
+ * - Tabbed interface for call details (Overview, Transcript, Violations)
+ * - Quick insights and recommendations
+ * - Risk timeline and comparison metrics
  *
- * Uses CSS Grid for responsive layout
+ * Uses modern dark theme and tabbed navigation
  */
 export function Dashboard() {
   const { selectedFile, state, actions } = useFileManager();
@@ -29,15 +33,45 @@ export function Dashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFile?.name, selectedFile?.uploadedAt]);
 
+  // Handler to download the call log JSON
+  const handleDownload = useCallback(() => {
+    if (!selectedFile || !state.selectedFileTranscript || !state.selectedFileAnalysis) return;
+
+    const callLogData = {
+      metadata: {
+        filename: selectedFile.name,
+        uploadedAt: selectedFile.uploadedAt,
+        callDuration: selectedFile.callDuration,
+      },
+      transcript: state.selectedFileTranscript,
+      analysis: state.selectedFileAnalysis,
+    };
+
+    const blob = new Blob([JSON.stringify(callLogData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = selectedFile.name;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }, [selectedFile, state.selectedFileTranscript, state.selectedFileAnalysis]);
+
+  // Handler to close the call and return to portfolio analytics
+  const handleClose = useCallback(() => {
+    actions.selectFile(null);
+  }, [actions]);
+
   // Show error state if there is an error and no data available
   if (state.error && !state.selectedFileTranscript && !state.selectedFileAnalysis) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-red-50 p-8">
-        <div className="text-center max-w-md">
-          <h3 className="text-lg font-medium text-red-900 mb-2">Error</h3>
-          <p className="text-sm text-red-700">{state.error}</p>
+      <div className="flex-1 flex items-center justify-center bg-dark-bg p-8">
+        <div className="text-center max-w-md bg-dark-surface rounded-card p-8 border border-risk-critical/30">
+          <h3 className="text-lg font-medium text-risk-critical mb-2">Error</h3>
+          <p className="text-sm text-dark-text-secondary">{state.error}</p>
           <button 
-            className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+            className="mt-4 px-4 py-2 bg-risk-critical text-white rounded-lg hover:bg-risk-critical/90 focus:outline-none focus:ring-2 focus:ring-risk-critical focus:ring-offset-2 focus:ring-offset-dark-bg transition-colors"
             onClick={() => {
               if (selectedFile) {
                 actions.loadSelectedFileData(selectedFile.name, selectedFile.uploadedAt);
@@ -51,34 +85,11 @@ export function Dashboard() {
     );
   }
 
-  // Show empty state when no file is selected
+  // Show Portfolio Analytics when no file is selected
   if (!selectedFile) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-gray-50 p-8">
-        <div className="text-center max-w-md">
-          <div className="text-gray-400 mb-4">
-            <svg
-              className="mx-auto h-24 w-24"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              />
-            </svg>
-          </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
-            No Call Selected
-          </h3>
-          <p className="text-sm text-gray-500">
-            Select a call log from the list to view its analysis, transcript, and compliance details.
-          </p>
-        </div>
+      <div className="flex-1 bg-dark-bg overflow-auto dark-scrollbar">
+        <PortfolioAnalytics files={state.files} />
       </div>
     );
   }
@@ -88,138 +99,120 @@ export function Dashboard() {
   // Show loading state while data is being fetched
   if (selectedFileLoading) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-gray-50 p-8">
+      <div className="flex-1 flex items-center justify-center bg-dark-bg p-8">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
-          <p className="text-sm text-gray-600">Loading call data...</p>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-badge-pressure mb-4"></div>
+          <p className="text-sm text-dark-text-secondary">Loading call data...</p>
         </div>
       </div>
     );
   }
 
+  // Show error if analysis failed to load
+  if (!selectedFileAnalysis) {
+    return (
+      <div className="flex-1 flex items-center justify-center bg-dark-bg p-8">
+        <div className="text-center max-w-md bg-dark-surface rounded-card p-8 border border-dark-border">
+          <h3 className="text-lg font-medium text-dark-text-primary mb-2">No Analysis Available</h3>
+          <p className="text-sm text-dark-text-secondary">
+            This call hasn't been analyzed yet or the analysis failed to load.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Define tabs
+  const tabs = [
+    {
+      id: 'overview',
+      label: 'Overview',
+      icon: (
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+      ),
+      content: <OverviewTab analysis={selectedFileAnalysis} metadata={selectedFile} />,
+    },
+    {
+      id: 'transcript',
+      label: 'Transcript',
+      icon: (
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+        </svg>
+      ),
+      content: <TranscriptTab transcript={selectedFileTranscript || []} />,
+    },
+    {
+      id: 'violations',
+      label: 'Violations',
+      icon: (
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+      ),
+      content: <ViolationsTab analysis={selectedFileAnalysis} />,
+    },
+  ];
+
   return (
-    <div className="flex-1 bg-gray-50 overflow-auto">
-      <div className="p-6">
-        {/* Dashboard Grid Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-          {/* Analysis Summary Card - Left column */}
-          <div className="lg:col-span-4">
-            {state.error && state.error.includes('analysis') ? (
-              <div className="bg-red-50 rounded-lg shadow p-6">
-                <h2 className="text-xl font-bold mb-4">Analysis</h2>
-                <p className="text-sm text-red-700">{state.error}</p>
-                <button 
-                  className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-                  onClick={() => {
-                    if (selectedFile) {
-                      actions.loadSelectedFileData(selectedFile.name, selectedFile.uploadedAt);
-                    }
-                  }}
-                >
-                  Retry Loading Analysis
-                </button>
-              </div>
-            ) : (
-              <AnalysisSummaryCard analysis={selectedFileAnalysis} fileMetadata={selectedFile} />
-            )}
+    <div className="flex-1 bg-dark-bg flex flex-col overflow-hidden">
+      {/* Header */}
+      <div className="bg-dark-surface border-b border-dark-border px-6 py-4">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3 min-w-0 flex-1">
+            <h1 className="text-xl font-bold text-white truncate">
+              📞 {selectedFile.name}
+            </h1>
+            
+            {/* Download Button */}
+            <button
+              onClick={handleDownload}
+              className="flex-shrink-0 p-2 hover:bg-dark-elevated rounded-lg transition-colors group"
+              title="Download call log JSON"
+            >
+              <svg className="w-5 h-5 text-text-muted group-hover:text-badge-success transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+            </button>
           </div>
-
-          {/* Main Content Area - Right column */}
-          <div className="lg:col-span-8 space-y-6">
-
-            {/* Violations Section */}
-            {selectedFileAnalysis?.violations && selectedFileAnalysis.violations.length > 0 && (
-              <div className="bg-white rounded-lg shadow p-6">
-                <h2 className="text-xl font-bold mb-4">Identified Violations</h2>
-                <div className="space-y-4">
-                  {selectedFileAnalysis.violations.map((violation, index) => (
-                    <div
-                      key={index}
-                      className={`p-4 rounded-lg border-l-4 ${
-                        violation.severity === 'critical' || violation.severity === 'high'
-                          ? 'border-red-500 bg-red-50'
-                          : violation.severity === 'medium'
-                          ? 'border-yellow-500 bg-yellow-50'
-                          : 'border-blue-500 bg-blue-50'
-                      }`}
-                    >
-                      <div className="flex items-start justify-between mb-2">
-                        <span className="text-sm font-semibold text-gray-900">
-                          {violation.regulation || 'FDCPA Violation'}
-                        </span>
-                        <span className={`text-xs font-medium px-2 py-1 rounded uppercase ${
-                          violation.severity === 'critical' || violation.severity === 'high'
-                            ? 'bg-red-200 text-red-800'
-                            : violation.severity === 'medium'
-                            ? 'bg-yellow-200 text-yellow-800'
-                            : 'bg-blue-200 text-blue-800'
-                        }`}>
-                          {violation.severity}
-                        </span>
-                      </div>
-
-                      {violation.quote && (
-                        <blockquote className="my-2 pl-3 border-l-2 border-gray-300 text-sm italic text-gray-700">
-                          &quot;{violation.quote}&quot;
-                        </blockquote>
-                      )}
-
-                      <p className="text-sm text-gray-700 mb-2">{violation.explanation}</p>
-
-                      {violation.suggestedAlternative && (
-                        <div className="mt-3 pt-3 border-t border-gray-200">
-                          <p className="text-xs font-medium text-green-800 mb-1">Suggested Alternative:</p>
-                          <p className="text-sm text-green-700">{violation.suggestedAlternative}</p>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Transcript Section */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-xl font-bold mb-4">Call Transcript</h2>
-              {selectedFileTranscript && selectedFileTranscript.length > 0 ? (
-                <div className="space-y-3">
-                  {selectedFileTranscript.map((turn, index) => (
-                    <div
-                      key={index}
-                      className={`p-3 rounded-lg ${
-                        turn.speaker === 'agent' ? 'bg-blue-50 ml-0 mr-8' : 'bg-gray-50 ml-8 mr-0'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-xs font-semibold text-gray-700 uppercase">
-                          {turn.speaker}
-                        </span>
-                        <span className="text-xs text-gray-500">
-                          {typeof turn.timestamp === 'number'
-                            ? new Date(turn.timestamp * 1000).toISOString().substr(14, 5)
-                            : turn.timestamp}
-                        </span>
-                      </div>
-                      <p className="text-sm text-gray-800">{turn.text}</p>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-sm text-gray-500">No transcript data available</p>
-              )}
+          
+          <div className="flex items-center gap-3">
+            {/* Risk Badge */}
+            <div className={`px-4 py-2 rounded-lg font-bold text-sm uppercase whitespace-nowrap ${
+              selectedFileAnalysis.riskScore >= 7 ? 'bg-risk-critical text-white' :
+              selectedFileAnalysis.riskScore >= 5 ? 'bg-risk-high text-white' :
+              selectedFileAnalysis.riskScore >= 3 ? 'bg-risk-medium text-white' :
+              'bg-risk-none text-white'
+            }`}>
+              {selectedFileAnalysis.riskScore >= 7 ? '🔴 CRITICAL RISK' :
+               selectedFileAnalysis.riskScore >= 5 ? '🟠 HIGH RISK' :
+               selectedFileAnalysis.riskScore >= 3 ? '🟡 MEDIUM RISK' :
+               '🟢 LOW RISK'}
             </div>
 
-            {/* Charts Placeholder for Story 4.4 */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-xl font-bold mb-4">Compliance Trends</h2>
-              <p className="text-sm text-gray-500">
-                Trend charts will be implemented in Story 4.4
-              </p>
-            </div>
-
+            {/* Close Button */}
+            <button
+              onClick={handleClose}
+              className="flex-shrink-0 p-2 hover:bg-dark-elevated rounded-lg transition-colors group"
+              title="Return to Portfolio Analytics"
+            >
+              <svg className="w-5 h-5 text-text-muted group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
         </div>
+        
+        <p className="text-sm text-text-muted mt-2">
+          Uploaded {new Date(selectedFile.uploadedAt).toLocaleString()}
+        </p>
+      </div>
+
+      {/* Tabbed Content */}
+      <div className="flex-1 overflow-hidden">
+        <Tabs tabs={tabs} defaultTab="overview" />
       </div>
     </div>
   );

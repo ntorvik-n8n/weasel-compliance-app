@@ -11,12 +11,22 @@ export interface TranscriptTurn {
 export interface CallLog {
   callId: string;
   timestamp: string;
-  duration: string;
-  agentId: string;
-  agentName: string;
-  accountNumber: string;
+  duration: string | number; // Can be string "HH:MM:SS" or number (seconds)
+  // Support both nested and flat agent structures
+  agent?: {
+    id: string;
+    name: string;
+  };
+  agentId?: string;
+  agentName?: string;
+  // Client information
+  client?: {
+    id: string;
+    name: string;
+  };
+  accountNumber?: string;
   transcript: TranscriptTurn[];
-  metadata: {
+  metadata?: {
     callType: 'inbound' | 'outbound';
     accountBalance: number;
     previousContacts: number;

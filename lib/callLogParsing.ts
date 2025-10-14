@@ -32,8 +32,8 @@ export function parseCallLogMetadata(json: CallLog): Partial<FileMetadata> {
 
   return {
     callId: json.callId,
-    agentName: json.agentName,
-    agentId: json.agentId,
+    agentName: json.agent?.name || json.agentName,
+    agentId: json.agent?.id || json.agentId,
     callDuration: durationInSeconds,
     callTimestamp: json.timestamp,
     // riskAssessment will be added in Epic 3

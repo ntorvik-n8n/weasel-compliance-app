@@ -24,27 +24,27 @@ export function UploadProgressBar({ upload, onRetry, onCancel, onDismiss }: Uplo
   const { state, progress, filename, uploadedBytes, totalBytes, speed, estimatedTimeRemaining, error } = upload;
 
   return (
-    <div className="upload-progress-bar p-4 border rounded-lg mb-2">
-      <div className="upload-header flex items-center justify-between">
-        <div className="flex items-center">
+    <div className="upload-progress-bar p-4 border rounded-lg mb-2 bg-dark-surface border-dark-border max-w-full overflow-hidden">
+      <div className="upload-header flex items-center justify-between gap-2 min-w-0">
+        <div className="flex items-center gap-2 min-w-0 flex-1">
           <FileIcon />
-          <span className="filename ml-2 font-medium">{filename}</span>
+          <span className="filename font-medium text-white text-sm truncate">{filename}</span>
         </div>
         <StateIndicator state={state} />
       </div>
 
-      <div className="progress-bar-container mt-2 h-2 bg-gray-200 rounded">
+      <div className="progress-bar-container mt-2 h-2 bg-dark-elevated rounded overflow-hidden">
         <div
-          className="progress-bar-fill h-full bg-blue-500 rounded"
+          className="progress-bar-fill h-full bg-badge-pressure rounded transition-all duration-300"
           style={{ width: `${progress}%` }}
         />
       </div>
 
-      <div className="progress-details flex justify-between text-sm text-gray-500 mt-1">
-        <span>{formatBytes(uploadedBytes)} / {formatBytes(totalBytes)}</span>
-        <span>{Math.round(progress)}%</span>
-        {speed > 0 && <span>{formatSpeed(speed)}</span>}
-        {estimatedTimeRemaining > 0 && <span>{formatTime(estimatedTimeRemaining)} remaining</span>}
+      <div className="progress-details flex flex-wrap gap-x-4 gap-y-1 text-xs text-text-muted mt-2">
+        <span className="whitespace-nowrap">{formatBytes(uploadedBytes)} / {formatBytes(totalBytes)}</span>
+        <span className="whitespace-nowrap">{Math.round(progress)}%</span>
+        {speed > 0 && <span className="whitespace-nowrap">{formatSpeed(speed)}</span>}
+        {estimatedTimeRemaining > 0 && <span className="whitespace-nowrap">{formatTime(estimatedTimeRemaining)}</span>}
       </div>
 
       {error && (
