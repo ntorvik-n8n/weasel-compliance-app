@@ -371,7 +371,7 @@ export function ViolationsTab({ analysis }: ViolationsTabProps) {
           </div>
         </div>
       )}
-      </div>
+    </div>
     </div>
   );
 }
