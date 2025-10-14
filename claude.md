@@ -211,19 +211,34 @@ Expected structure for uploaded JSON files:
 
 ## Azure Blob Storage Structure
 
+**UPDATED: Flat structure (no date partitions) - October 14, 2025**
+
 ```
-/call-logs/
-  /raw/                           # Original uploaded files
-    /2024/10/09/                  # Date-based organization
-      chatlog1.json
-      chatlog1_001.json           # Collision resolution
-  /processed/                     # AI-analyzed files
-    /2024/10/09/
-      chatlog1_analysis.json
-  /backups/                       # Backups before replacement
-    /2024/10/09/
-      chatlog1_backup_20251009_143027.json
+Container: call-logs-raw
+  call-log-001.json
+  call-log-002.json
+  call-log-003.json
+  ...
+
+Container: call-logs-processed
+  call-log-001.json          # AI analysis results
+  call-log-002.json
+  call-log-003.json
+  ...
+
+Container: call-logs-backups
+  call-log-001_backup_20251014_143027.json
+  ...
 ```
+
+**Previous structure (deprecated):**
+```
+/raw/2024/10/09/chatlog1.json  ❌ No longer used
+```
+
+**Migration:**
+- Use `scripts/migrate-to-flat-structure.js` to convert old files
+- Old date-partitioned files preserved for safety
 
 ---
 
@@ -476,6 +491,79 @@ npm run format
 ---
 
 ## Recent Changes & Important Notes
+
+### **CRITICAL: Pre-Deployment Checklist**
+
+**⚠️ BEFORE EVERY GIT PUSH TO MAIN:**
+
+1. **Increment Build Number**
+   ```bash
+   npm run increment-build
+   ```
+   - This updates `public/build.json` with new build number and timestamp
+   - Build number is displayed in the app footer
+   - Allows tracking which version is deployed
+   - **NEVER skip this step before pushing to main branch**
+
+2. **Verify Local Build**
+   ```bash
+   npm run build
+   ```
+   - Ensure build completes without errors
+   - Check for TypeScript errors
+   - Verify no critical warnings
+
+3. **Test Locally** (if applicable)
+   ```bash
+   npm run dev
+   ```
+   - Test on http://localhost:3000 (or alternate port)
+   - Verify critical functionality works
+
+4. **Git Commit Workflow**
+   ```bash
+   git add .
+   git commit -m "descriptive message"
+   git push origin main
+   ```
+   - Commit message should describe changes
+   - Push triggers Azure Static Web Apps deployment
+
+---
+
+### October 14, 2025 - Flat Storage Structure & Azure SWA Fixes
+
+**Major Architecture Change:**
+- ✅ **Simplified Blob Storage to Flat Structure**
+  - **OLD**: `2025/10/14/filename.json` (date-partitioned)
+  - **NEW**: `filename.json` (flat structure)
+  - Eliminates date-related path bugs
+  - Simpler, more reliable file lookups
+  - Better Azure SWA compatibility
+
+**Azure Deployment Fixes:**
+- ✅ **Added `output: 'standalone'` to next.config.js** - Required for Azure SWA
+- ✅ **Fixed staticwebapp.config.json** - Removed breaking responseOverrides
+- ✅ **Corrected workflow output_location** - Set to empty string for auto-detection
+- ✅ **Migration script created** - `scripts/migrate-to-flat-structure.js`
+  - Successfully migrated 12 files (6 raw, 6 processed)
+  - Old date-partitioned files preserved as backup
+
+**Error Handling Improvements:**
+- ✅ **404 BlobNotFound errors handled silently** - Expected during status polling
+- ✅ **Improved logging** - Only real errors logged to console
+
+**Key Files Modified:**
+- [lib/azure/blobStorageClient.ts](lib/azure/blobStorageClient.ts) - Flat path structure
+- [staticwebapp.config.json](staticwebapp.config.json) - Fixed SWA config
+- [next.config.js](next.config.js) - Added standalone output
+- [.github/workflows/azure-static-web-apps.yml](.github/workflows/azure-static-web-apps.yml) - Fixed deployment
+
+**Current Status:**
+- ✅ Local development: WORKING (http://localhost:3002)
+- 🚀 Azure deployment: IN PROGRESS (testing standalone build)
+
+---
 
 ### October 13, 2025 - Next.js 15 Migration & Fixes
 **Critical Changes:**
