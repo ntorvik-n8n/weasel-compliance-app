@@ -1,0 +1,70 @@
+{
+  "callId": "CL-2025-019",
+  "timestamp": "2025-10-14T08:55:20Z",
+  "agent": {
+    "id": "AGT-4423",
+    "name": "Christopher Lee"
+  },
+  "client": {
+    "id": "CLI-5876",
+    "name": "Elizabeth D."
+  },
+  "duration": 318,
+  "transcript": [
+    {
+      "timestamp": 0,
+      "speaker": "agent",
+      "text": "Good morning, this is Christopher Lee from Central Collections. I need to speak with Elizabeth."
+    },
+    {
+      "timestamp": 8,
+      "speaker": "client",
+      "text": "This is Elizabeth."
+    },
+    {
+      "timestamp": 10,
+      "speaker": "agent",
+      "text": "Elizabeth, you have a seriously delinquent account with us. $5,200 that you've ignored for months. This is your final notice before we take legal action."
+    },
+    {
+      "timestamp": 24,
+      "speaker": "client",
+      "text": "I haven't ignored it! I've called three times and no one has returned my calls!"
+    },
+    {
+      "timestamp": 31,
+      "speaker": "agent",
+      "text": "Well I don't see any notes about that. Either way, we need payment NOW. Can you pay the full amount today?"
+    },
+    {
+      "timestamp": 42,
+      "speaker": "client",
+      "text": "No! I wanted to set up a payment plan, that's why I was calling!"
+    },
+    {
+      "timestamp": 48,
+      "speaker": "agent",
+      "text": "Payment plans are for people who respond to our calls. You've had plenty of chances. At minimum, we need $2,000 immediately or we're filing a lawsuit by tomorrow."
+    },
+    {
+      "timestamp": 63,
+      "speaker": "client",
+      "text": "You can't do that without giving me proper notice!"
+    },
+    {
+      "timestamp": 68,
+      "speaker": "agent",
+      "text": "This IS your notice. I'm documenting this call right now. $2,000 by 5 PM tomorrow or expect legal papers. Your choice."
+    },
+    {
+      "timestamp": 80,
+      "speaker": "client",
+      "text": "I want to speak to your supervisor."
+    },
+    {
+      "timestamp": 84,
+      "speaker": "agent",
+      "text": "Fine, but it won't change anything. The deadline is still tomorrow. I'll transfer you, but expect to be on hold."
+    }
+  ]
+}

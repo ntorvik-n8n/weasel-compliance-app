@@ -1,0 +1,75 @@
+{
+  "callId": "CL-2025-015",
+  "timestamp": "2025-10-12T13:18:55Z",
+  "agent": {
+    "id": "AGT-2789",
+    "name": "Jessica Park"
+  },
+  "client": {
+    "id": "CLI-6102",
+    "name": "Thomas R."
+  },
+  "duration": 355,
+  "transcript": [
+    {
+      "timestamp": 0,
+      "speaker": "agent",
+      "text": "Hello, this is Jessica from Apex Collections calling for Thomas. Is he available?"
+    },
+    {
+      "timestamp": 7,
+      "speaker": "client",
+      "text": "This is Thomas."
+    },
+    {
+      "timestamp": 9,
+      "speaker": "agent",
+      "text": "Thank you. I'm calling about a debt of $4,100 that you owe. You haven't made a payment in over 90 days."
+    },
+    {
+      "timestamp": 20,
+      "speaker": "client",
+      "text": "I know, I've been having financial trouble."
+    },
+    {
+      "timestamp": 24,
+      "speaker": "agent",
+      "text": "I hear that a lot. But you know what? Other people find a way to pay. Maybe you should get a second job instead of making excuses."
+    },
+    {
+      "timestamp": 35,
+      "speaker": "client",
+      "text": "That's really rude. I've been looking for work."
+    },
+    {
+      "timestamp": 40,
+      "speaker": "agent",
+      "text": "I'm just being honest. This debt isn't going away. We can either work out a payment plan or we move to collections. What's it going to be?"
+    },
+    {
+      "timestamp": 53,
+      "speaker": "client",
+      "text": "What kind of payment plan?"
+    },
+    {
+      "timestamp": 56,
+      "speaker": "agent",
+      "text": "We need at least $500 down and then $250 a month. Can you do that or not?"
+    },
+    {
+      "timestamp": 65,
+      "speaker": "client",
+      "text": "I can probably do $200 a month but I don't have $500 right now."
+    },
+    {
+      "timestamp": 72,
+      "speaker": "agent",
+      "text": "Then we have a problem. I'll put you down for $200 a month starting next week, but if you miss even one payment, this whole thing goes to our legal team. Understand?"
+    },
+    {
+      "timestamp": 87,
+      "speaker": "client",
+      "text": "Yes, I understand."
+    }
+  ]
+}

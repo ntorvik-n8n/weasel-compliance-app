@@ -1,0 +1,70 @@
+{
+  "callId": "CL-2025-020",
+  "timestamp": "2025-10-14T11:30:15Z",
+  "agent": {
+    "id": "AGT-2967",
+    "name": "Samantha Brooks"
+  },
+  "client": {
+    "id": "CLI-7320",
+    "name": "Richard C."
+  },
+  "duration": 189,
+  "transcript": [
+    {
+      "timestamp": 0,
+      "speaker": "agent",
+      "text": "Good morning, this is Samantha Brooks from Summit Collections calling for Richard. Is he available?"
+    },
+    {
+      "timestamp": 9,
+      "speaker": "client",
+      "text": "Speaking."
+    },
+    {
+      "timestamp": 11,
+      "speaker": "agent",
+      "text": "Hi Richard, thank you for taking my call. I'm reaching out about your account that shows a balance of $1,450. I wanted to touch base and see if we could work together to resolve this."
+    },
+    {
+      "timestamp": 27,
+      "speaker": "client",
+      "text": "I was planning to pay it next week when I get my bonus check."
+    },
+    {
+      "timestamp": 33,
+      "speaker": "agent",
+      "text": "That's great to hear! Would you like me to note that in your account so you don't receive any additional calls before then? When exactly do you expect to receive your bonus?"
+    },
+    {
+      "timestamp": 47,
+      "speaker": "client",
+      "text": "It should be deposited by the 20th."
+    },
+    {
+      "timestamp": 51,
+      "speaker": "agent",
+      "text": "Perfect. I'll put a hold on your account until the 20th. Would you be paying the full balance or would you prefer to set up a payment arrangement?"
+    },
+    {
+      "timestamp": 64,
+      "speaker": "client",
+      "text": "I'll pay it in full."
+    },
+    {
+      "timestamp": 67,
+      "speaker": "agent",
+      "text": "Excellent! I really appreciate you being proactive about this. I'll send you a payment confirmation email with our payment portal link. If for any reason the bonus doesn't come through, just give us a call and we'll work out an alternative plan. Sound good?"
+    },
+    {
+      "timestamp": 86,
+      "speaker": "client",
+      "text": "Yes, thank you for being so helpful."
+    },
+    {
+      "timestamp": 90,
+      "speaker": "agent",
+      "text": "My pleasure, Richard. Have a wonderful day!"
+    }
+  ]
+}

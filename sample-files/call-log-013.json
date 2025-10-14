@@ -1,0 +1,60 @@
+{
+  "callId": "CL-2025-013",
+  "timestamp": "2025-10-12T09:10:45Z",
+  "agent": {
+    "id": "AGT-1567",
+    "name": "Rachel Green"
+  },
+  "client": {
+    "id": "CLI-7821",
+    "name": "Michael B."
+  },
+  "duration": 198,
+  "transcript": [
+    {
+      "timestamp": 0,
+      "speaker": "agent",
+      "text": "Good morning, this is Rachel Green calling from Financial Services. May I speak with Michael?"
+    },
+    {
+      "timestamp": 8,
+      "speaker": "client",
+      "text": "Speaking."
+    },
+    {
+      "timestamp": 10,
+      "speaker": "agent",
+      "text": "Thank you. I'm calling about your account ending in 7823. There's a balance of $925 that's currently 45 days past due."
+    },
+    {
+      "timestamp": 22,
+      "speaker": "client",
+      "text": "Oh right, I've been meaning to take care of that. Can I pay half now and half next month?"
+    },
+    {
+      "timestamp": 30,
+      "speaker": "agent",
+      "text": "Let me check what options we have. Yes, I can set up a two-payment plan for you. When would you like to make the first payment?"
+    },
+    {
+      "timestamp": 42,
+      "speaker": "client",
+      "text": "Can we do it on the 15th? That's when I get paid."
+    },
+    {
+      "timestamp": 47,
+      "speaker": "agent",
+      "text": "Absolutely. I'll schedule $462.50 for the 15th of this month and the remaining balance for the 15th of next month. Does that work for you?"
+    },
+    {
+      "timestamp": 61,
+      "speaker": "client",
+      "text": "Perfect, thank you."
+    },
+    {
+      "timestamp": 64,
+      "speaker": "agent",
+      "text": "You're welcome. You'll receive a confirmation email shortly with all the details. Have a great day!"
+    }
+  ]
+}

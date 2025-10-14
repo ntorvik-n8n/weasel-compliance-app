@@ -1,0 +1,60 @@
+{
+  "callId": "CL-2025-016",
+  "timestamp": "2025-10-13T10:05:12Z",
+  "agent": {
+    "id": "AGT-3156",
+    "name": "Amanda Rodriguez"
+  },
+  "client": {
+    "id": "CLI-4567",
+    "name": "Kevin M."
+  },
+  "duration": 221,
+  "transcript": [
+    {
+      "timestamp": 0,
+      "speaker": "agent",
+      "text": "Good morning, this is Amanda Rodriguez from Reliable Recovery Services. Am I speaking with Kevin?"
+    },
+    {
+      "timestamp": 8,
+      "speaker": "client",
+      "text": "Yes, that's me."
+    },
+    {
+      "timestamp": 10,
+      "speaker": "agent",
+      "text": "Hi Kevin, I'm calling regarding your account with us. There's a balance of $1,275 that's currently 60 days past due. Are you aware of this balance?"
+    },
+    {
+      "timestamp": 24,
+      "speaker": "client",
+      "text": "Yes, I am. I've been trying to catch up but it's been tough."
+    },
+    {
+      "timestamp": 30,
+      "speaker": "agent",
+      "text": "I completely understand. Life can throw unexpected challenges at us. What I'd like to do is work with you to find a solution that fits your budget. What amount would be manageable for you each month?"
+    },
+    {
+      "timestamp": 47,
+      "speaker": "client",
+      "text": "I think I could do $150 a month."
+    },
+    {
+      "timestamp": 51,
+      "speaker": "agent",
+      "text": "That sounds reasonable. Let me set that up for you. Your first payment would be due on the 5th of next month. I'll also see if we can waive some of the late fees to help you out. Does the 5th work for your budget?"
+    },
+    {
+      "timestamp": 70,
+      "speaker": "client",
+      "text": "Yes, that would be perfect. Thank you for being so understanding."
+    },
+    {
+      "timestamp": 76,
+      "speaker": "agent",
+      "text": "You're very welcome, Kevin. We're here to help. You'll receive a confirmation email today, and if anything changes with your financial situation, please don't hesitate to call us. We can always adjust the plan."
+    }
+  ]
+}

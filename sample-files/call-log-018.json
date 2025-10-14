@@ -1,0 +1,65 @@
+{
+  "callId": "CL-2025-018",
+  "timestamp": "2025-10-13T16:20:45Z",
+  "agent": {
+    "id": "AGT-1834",
+    "name": "Nicole Harper"
+  },
+  "client": {
+    "id": "CLI-2198",
+    "name": "James T."
+  },
+  "duration": 267,
+  "transcript": [
+    {
+      "timestamp": 0,
+      "speaker": "agent",
+      "text": "Hello, is this James? This is Nicole Harper calling from Premier Financial."
+    },
+    {
+      "timestamp": 7,
+      "speaker": "client",
+      "text": "Yes, this is James."
+    },
+    {
+      "timestamp": 9,
+      "speaker": "agent",
+      "text": "James, I'm reaching out about your account that has a balance of $2,650. I see you've missed the last two payments. Can you tell me what's going on?"
+    },
+    {
+      "timestamp": 23,
+      "speaker": "client",
+      "text": "My car broke down and I had to use my bill money to fix it. I need it for work."
+    },
+    {
+      "timestamp": 31,
+      "speaker": "agent",
+      "text": "I understand unexpected expenses can really throw off your budget. Here's what I can do - if you can make a payment of $300 today, I can push your next payment out by two weeks to give you some breathing room."
+    },
+    {
+      "timestamp": 50,
+      "speaker": "client",
+      "text": "I don't have $300 today. Could I do $150?"
+    },
+    {
+      "timestamp": 56,
+      "speaker": "agent",
+      "text": "Hmm, that's a bit low, but let me see what I can work out. If you commit to $150 today and then $200 in two weeks, I think I can make that work. Sound fair?"
+    },
+    {
+      "timestamp": 72,
+      "speaker": "client",
+      "text": "Yes, I can do that. Thank you for working with me."
+    },
+    {
+      "timestamp": 77,
+      "speaker": "agent",
+      "text": "No problem, James. I know things happen. Just make sure you hit those dates, okay? I'm noting this in your account so you won't get any calls during that time."
+    },
+    {
+      "timestamp": 91,
+      "speaker": "client",
+      "text": "I appreciate that. I will."
+    }
+  ]
+}

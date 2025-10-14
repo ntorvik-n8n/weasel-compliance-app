@@ -1,0 +1,70 @@
+{
+  "callId": "CL-2025-017",
+  "timestamp": "2025-10-13T14:42:30Z",
+  "agent": {
+    "id": "AGT-5021",
+    "name": "Derek Williams"
+  },
+  "client": {
+    "id": "CLI-8934",
+    "name": "Maria G."
+  },
+  "duration": 292,
+  "transcript": [
+    {
+      "timestamp": 0,
+      "speaker": "agent",
+      "text": "Is this Maria? This is Derek from National Debt Recovery."
+    },
+    {
+      "timestamp": 5,
+      "speaker": "client",
+      "text": "Yes, what is this about?"
+    },
+    {
+      "timestamp": 8,
+      "speaker": "agent",
+      "text": "You owe us $3,850 and it's been way too long. We're running out of patience here."
+    },
+    {
+      "timestamp": 17,
+      "speaker": "client",
+      "text": "I've been making payments! I sent $200 last month."
+    },
+    {
+      "timestamp": 22,
+      "speaker": "agent",
+      "text": "$200? That's nothing compared to what you owe. At this rate, you'll be paying this off when you're 80 years old. We need real payments, not these tiny amounts."
+    },
+    {
+      "timestamp": 36,
+      "speaker": "client",
+      "text": "It's all I can afford right now!"
+    },
+    {
+      "timestamp": 40,
+      "speaker": "agent",
+      "text": "Then maybe you should sell something. Downsize your lifestyle. I don't care how you get it, but we need at least $1,000 by the end of this week or we're pursuing other options."
+    },
+    {
+      "timestamp": 55,
+      "speaker": "client",
+      "text": "What other options?"
+    },
+    {
+      "timestamp": 58,
+      "speaker": "agent",
+      "text": "We could garnish your wages, put a lien on your property. Trust me, you don't want it to go there. Just get us the money."
+    },
+    {
+      "timestamp": 70,
+      "speaker": "client",
+      "text": "I... I'll try to borrow from my family."
+    },
+    {
+      "timestamp": 75,
+      "speaker": "agent",
+      "text": "Good. I'll call you Friday to confirm you have it. Don't make me chase you down."
+    }
+  ]
+}

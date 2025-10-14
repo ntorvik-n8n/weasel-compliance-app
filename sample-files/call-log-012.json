@@ -1,0 +1,65 @@
+{
+  "callId": "CL-2025-012",
+  "timestamp": "2025-10-11T15:45:30Z",
+  "agent": {
+    "id": "AGT-2211",
+    "name": "Marcus Thompson"
+  },
+  "client": {
+    "id": "CLI-9543",
+    "name": "Susan L."
+  },
+  "duration": 312,
+  "transcript": [
+    {
+      "timestamp": 0,
+      "speaker": "agent",
+      "text": "Hello, is this Susan?"
+    },
+    {
+      "timestamp": 3,
+      "speaker": "client",
+      "text": "Yes, who's calling?"
+    },
+    {
+      "timestamp": 5,
+      "speaker": "agent",
+      "text": "This is Marcus from Allied Recovery. You have a debt of $3,200 that's seriously past due. We need payment TODAY."
+    },
+    {
+      "timestamp": 16,
+      "speaker": "client",
+      "text": "I can't pay that all at once!"
+    },
+    {
+      "timestamp": 19,
+      "speaker": "agent",
+      "text": "Well you should have thought about that before you decided not to pay your bills. If we don't get at least $1,000 by Friday, we're moving forward with legal action."
+    },
+    {
+      "timestamp": 32,
+      "speaker": "client",
+      "text": "That's not fair, I've been trying to work with you!"
+    },
+    {
+      "timestamp": 36,
+      "speaker": "agent",
+      "text": "Look, I don't make the rules. This is your last chance. Can you pay $1,000 or not?"
+    },
+    {
+      "timestamp": 45,
+      "speaker": "client",
+      "text": "I... I can try to get $500."
+    },
+    {
+      "timestamp": 50,
+      "speaker": "agent",
+      "text": "Fine, but that doesn't stop the legal process. Get us $500 by Friday and we'll see what we can do."
+    },
+    {
+      "timestamp": 60,
+      "speaker": "client",
+      "text": "Okay."
+    }
+  ]
+}

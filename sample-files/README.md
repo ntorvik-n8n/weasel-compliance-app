@@ -12,11 +12,11 @@ This directory contains sample call log JSON files for testing the Weasel Collec
 | `compliant-call.json` | Low (1-2/10) | High (9-10/10) | Professional, compliant call with proper disclosures |
 | `high-risk-call.json` | High (8-9/10) | Low (2-3/10) | Call with serious FDCPA violations |
 
-### Extended Test Dataset (10 files)
+### Extended Test Dataset (20 files)
 
-Generated 2025-10-12 to provide comprehensive testing coverage.
+Generated 2025-10-12 and 2025-10-14 to provide comprehensive testing coverage.
 
-#### Compliant / Low Risk Calls (4 files)
+#### Compliant / Low Risk Calls (8 files)
 
 **`call-log-001.json`** - Professional Payment Plan Negotiation
 - **Agent:** Michael Torres (AGT-1023)
@@ -48,6 +48,34 @@ Generated 2025-10-12 to provide comprehensive testing coverage.
 - **Duration:** 367 seconds (6:07)
 - **Scenario:** Customer doesn't recognize debt, agent properly explains validation notice process
 - **Expected Analysis:** Low risk (1-2/10), High compliance (8-9/10)
+
+**`call-log-011.json`** - Understanding & Flexible ✨ NEW
+- **Agent:** Lisa Martinez (AGT-3401)
+- **Duration:** 245 seconds (4:05)
+- **Scenario:** Agent accommodates customer's job loss, sets up affordable payment plan
+- **Expected Analysis:** Low risk (1-2/10), High compliance (8-9/10)
+- **Key Features:** Shows empathy, flexible payment options, no pressure
+
+**`call-log-013.json`** - Efficient & Professional ✨ NEW
+- **Agent:** Rachel Green (AGT-1567)
+- **Duration:** 198 seconds (3:18)
+- **Scenario:** Quick, professional setup of two-payment plan aligned with payday
+- **Expected Analysis:** Low risk (1/10), High compliance (9/10)
+- **Key Features:** Efficient, respectful, customer-focused
+
+**`call-log-016.json`** - Empathetic & Solution-Focused ✨ NEW
+- **Agent:** Amanda Rodriguez (AGT-3156)
+- **Duration:** 221 seconds (3:41)
+- **Scenario:** Agent shows understanding, offers to waive late fees, flexible adjustment policy
+- **Expected Analysis:** Very low risk (1/10), Excellent compliance (9-10/10)
+- **Key Features:** Highly empathetic, proactive help, builds trust
+
+**`call-log-020.json`** - Proactive Customer Service ✨ NEW
+- **Agent:** Samantha Brooks (AGT-2967)
+- **Duration:** 189 seconds (3:09)
+- **Scenario:** Customer has payment plan, agent places account hold to prevent calls
+- **Expected Analysis:** Very low risk (0-1/10), Excellent compliance (9-10/10)
+- **Key Features:** Customer-first approach, prevents harassment, helpful
 - **Key Features:**
   - Explains 30-day dispute period
   - Mentions written notice requirement
@@ -79,7 +107,51 @@ Generated 2025-10-12 to provide comprehensive testing coverage.
   - Settlement option (40% reduction)
   - Multiple payment alternatives
 
-#### High Risk / Critical Violation Calls (4 files)
+#### Moderate Risk / Some Violations (6 files)
+
+**`call-log-012.json`** - Aggressive Urgency Tactics ✨ NEW
+- **Agent:** Marcus Thompson (AGT-2211)
+- **Duration:** 312 seconds (5:12)
+- **Scenario:** Demanding immediate payment, threats of legal action, somewhat disrespectful
+- **Expected Analysis:** Moderate-high risk (6/10), Fair compliance (4/10)
+- **Issues:** Excessive pressure ("need payment TODAY"), disrespectful tone, legal threats
+
+**`call-log-014.json`** - Dispute Handling Issues ✨ NEW
+- **Agent:** Brian Foster (AGT-4892)
+- **Duration:** 278 seconds (4:38)
+- **Scenario:** Initially ignores dispute claim, pressures for payment, eventually handles correctly
+- **Expected Analysis:** Moderate risk (5/10), Fair compliance (5/10)
+- **Issues:** Poor initial response to dispute, pressure tactics before verification
+
+**`call-log-015.json`** - Condescending & Dismissive ✨ NEW
+- **Agent:** Jessica Park (AGT-2789)
+- **Duration:** 355 seconds (5:55)
+- **Scenario:** Suggests customer get second job, dismissive of financial hardship, threats
+- **Expected Analysis:** Moderate-high risk (6/10), Poor compliance (4/10)
+- **Issues:** "Maybe you should get a second job", "I hear that a lot", legal team threats
+
+**`call-log-017.json`** - Unreasonable Demands & Property Threats ✨ NEW
+- **Agent:** Derek Williams (AGT-5021)
+- **Duration:** 292 seconds (4:52)
+- **Scenario:** Dismisses customer's payments, suggests selling possessions, wage garnishment threats
+- **Expected Analysis:** High risk (7/10), Poor compliance (3/10)
+- **Issues:** "Sell something", wage garnishment threats, lien threats, intimidation
+
+**`call-log-018.json`** - Minor Pressure with Good Recovery ✨ NEW
+- **Agent:** Nicole Harper (AGT-1834)
+- **Duration:** 267 seconds (4:27)
+- **Scenario:** Initial urgency but works with customer, flexible payment arrangement
+- **Expected Analysis:** Low-moderate risk (4/10), Good compliance (6/10)
+- **Issues:** Some pressure but shows empathy and flexibility
+
+**`call-log-019.json`** - Aggressive Deadline Demands ✨ NEW
+- **Agent:** Christopher Lee (AGT-4423)
+- **Duration:** 318 seconds (5:18)
+- **Scenario:** Ignores customer's outreach attempts, unreasonable deadline, lawsuit threats
+- **Expected Analysis:** High risk (7-8/10), Poor compliance (3/10)
+- **Issues:** "Final notice", 24-hour deadline, immediate lawsuit threat, dismissive
+
+#### High Risk / Critical Violation Calls (6 files)
 
 **`call-log-002.json`** - Severe Threats and Abusive Language
 - **Agent:** Sarah Chen (AGT-2145)

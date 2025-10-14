@@ -55,7 +55,8 @@ export function SimpleFileList() {
                   {file.riskScore !== undefined && (
                     <span className={`text-xs font-bold px-2 py-0.5 rounded ${
                       file.riskScore >= 7 ? 'bg-risk-critical/20 text-risk-critical' :
-                      file.riskScore >= 4 ? 'bg-risk-medium/20 text-risk-medium' :
+                      file.riskScore >= 5 ? 'bg-risk-high/20 text-risk-high' :
+                      file.riskScore >= 3 ? 'bg-risk-medium/20 text-risk-medium' :
                       'bg-risk-low/20 text-risk-low'
                     }`}>
                       {file.riskScore}/10

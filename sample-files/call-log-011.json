@@ -1,0 +1,65 @@
+{
+  "callId": "CL-2025-011",
+  "timestamp": "2025-10-11T14:22:15Z",
+  "agent": {
+    "id": "AGT-3401",
+    "name": "Lisa Martinez"
+  },
+  "client": {
+    "id": "CLI-8912",
+    "name": "David P."
+  },
+  "duration": 245,
+  "transcript": [
+    {
+      "timestamp": 0,
+      "speaker": "agent",
+      "text": "Good afternoon, this is Lisa Martinez from Premier Collections. Am I speaking with David?"
+    },
+    {
+      "timestamp": 6,
+      "speaker": "client",
+      "text": "Yes, this is David."
+    },
+    {
+      "timestamp": 9,
+      "speaker": "agent",
+      "text": "Thank you for taking my call. I'm reaching out regarding an outstanding balance of $1,850 on your account. Do you have a moment to discuss this?"
+    },
+    {
+      "timestamp": 22,
+      "speaker": "client",
+      "text": "I've been meaning to call. I lost my job last month and I'm struggling."
+    },
+    {
+      "timestamp": 29,
+      "speaker": "agent",
+      "text": "I understand that can be difficult. We do have payment plan options available. Would you be able to commit to $100 per month?"
+    },
+    {
+      "timestamp": 40,
+      "speaker": "client",
+      "text": "I think I could manage that."
+    },
+    {
+      "timestamp": 43,
+      "speaker": "agent",
+      "text": "Excellent. I'll set that up for you starting on the 1st of next month. You'll receive a confirmation email today."
+    },
+    {
+      "timestamp": 52,
+      "speaker": "client",
+      "text": "Thank you for understanding."
+    },
+    {
+      "timestamp": 55,
+      "speaker": "agent",
+      "text": "Of course. If your situation changes and you need to adjust the payment plan, just give us a call. Is there anything else I can help you with today?"
+    },
+    {
+      "timestamp": 67,
+      "speaker": "client",
+      "text": "No, that's all. Thank you."
+    }
+  ]
+}

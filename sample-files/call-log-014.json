@@ -1,0 +1,65 @@
+{
+  "callId": "CL-2025-014",
+  "timestamp": "2025-10-12T11:33:20Z",
+  "agent": {
+    "id": "AGT-4892",
+    "name": "Brian Foster"
+  },
+  "client": {
+    "id": "CLI-3421",
+    "name": "Patricia W."
+  },
+  "duration": 278,
+  "transcript": [
+    {
+      "timestamp": 0,
+      "speaker": "agent",
+      "text": "Hi, this is Brian calling about your overdue account. Is this Patricia?"
+    },
+    {
+      "timestamp": 6,
+      "speaker": "client",
+      "text": "Yes, but I already told your company I'm disputing this charge."
+    },
+    {
+      "timestamp": 12,
+      "speaker": "agent",
+      "text": "I don't see any dispute in our system. Regardless, you still owe $2,400 and we need to resolve this soon."
+    },
+    {
+      "timestamp": 23,
+      "speaker": "client",
+      "text": "I sent the dispute letter two weeks ago!"
+    },
+    {
+      "timestamp": 27,
+      "speaker": "agent",
+      "text": "Well, until it's processed, the debt is still valid. Can you make a payment today to show good faith?"
+    },
+    {
+      "timestamp": 38,
+      "speaker": "client",
+      "text": "I'm not paying anything until this is resolved properly."
+    },
+    {
+      "timestamp": 43,
+      "speaker": "agent",
+      "text": "Look, I understand you're frustrated, but delaying payment could hurt your credit score. Let me see if I can find your dispute in the system. Can you hold for a moment?"
+    },
+    {
+      "timestamp": 58,
+      "speaker": "client",
+      "text": "Fine."
+    },
+    {
+      "timestamp": 62,
+      "speaker": "agent",
+      "text": "Thank you for holding. I do see a dispute was received. I'm going to escalate this to our dispute resolution team. They'll contact you within 3-5 business days. In the meantime, no collection activity will occur on your account."
+    },
+    {
+      "timestamp": 82,
+      "speaker": "client",
+      "text": "Finally. Thank you."
+    }
+  ]
+}
