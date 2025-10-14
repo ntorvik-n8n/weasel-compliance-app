@@ -25,8 +25,65 @@ export function PortfolioAnalytics({ files }: PortfolioAnalyticsProps) {
     low: analyzedFiles.filter(f => (f.riskScore || 0) < 3).length,
   };
 
-  // Mock trend data for visualization (in production, would calculate from historical data)
-  const trendData = [4.5, 5.2, 4.8, 3.9, 4.1, 3.7, 3.2, 4.2];
+  // Calculate real trend data from analyzed files
+  // Group files by week and calculate counts per risk level (last 8 weeks)
+  const trendData = React.useMemo(() => {
+    const now = new Date();
+    const weekData: Array<{ critical: number; high: number; medium: number; low: number }> = [];
+    
+    for (let i = 7; i >= 0; i--) {
+      const weekStart = new Date(now);
+      weekStart.setDate(now.getDate() - (i + 1) * 7);
+      const weekEnd = new Date(now);
+      weekEnd.setDate(now.getDate() - i * 7);
+      
+      const weekFiles = analyzedFiles.filter(f => {
+        const uploadDate = new Date(f.uploadedAt);
+        return uploadDate >= weekStart && uploadDate < weekEnd;
+      });
+      
+      weekData.push({
+        critical: weekFiles.filter(f => (f.riskScore || 0) >= 7).length,
+        high: weekFiles.filter(f => (f.riskScore || 0) >= 5 && (f.riskScore || 0) < 7).length,
+        medium: weekFiles.filter(f => (f.riskScore || 0) >= 3 && (f.riskScore || 0) < 5).length,
+        low: weekFiles.filter(f => (f.riskScore || 0) < 3).length,
+      });
+    }
+    
+    // Check if we have meaningful trend data (at least 3 weeks with data)
+    const weeksWithData = weekData.filter(week => 
+      week.critical > 0 || week.high > 0 || week.medium > 0 || week.low > 0
+    ).length;
+    
+    // If not enough real data, show mock data for demonstration
+    if (weeksWithData < 3) {
+      return [
+        { critical: 3, high: 2, medium: 4, low: 6 },
+        { critical: 4, high: 1, medium: 5, low: 5 },
+        { critical: 3, high: 3, medium: 4, low: 7 },
+        { critical: 2, high: 4, medium: 3, low: 8 },
+        { critical: 3, high: 2, medium: 5, low: 7 },
+        { critical: 1, high: 3, medium: 4, low: 9 },
+        { critical: 1, high: 2, medium: 3, low: 10 },
+        { critical: 0, high: 1, medium: 2, low: 12 },
+      ];
+    }
+    
+    return weekData;
+  }, [analyzedFiles]);
+
+  // Calculate max value for Y-axis scaling
+  const maxTrendValue = React.useMemo(() => {
+    if (trendData.length === 0) return 10;
+    const max = Math.max(
+      ...trendData.flatMap(week => [week.critical, week.high, week.medium, week.low])
+    );
+    // Round up to nearest 5 for cleaner axis
+    const result = Math.max(5, Math.ceil(max / 5) * 5);
+    console.log('Portfolio Analytics - Trend Data:', trendData);
+    console.log('Portfolio Analytics - Max Value:', result);
+    return result;
+  }, [trendData]);
 
   // Recent high-risk alerts
   const recentHighRisk = analyzedFiles
@@ -47,20 +104,20 @@ export function PortfolioAnalytics({ files }: PortfolioAnalyticsProps) {
       {/* Top Metrics Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Total Calls */}
-        <div className="metric-card">
+        <div className="metric-card text-center">
           <div className="text-sm text-text-muted mb-2">Total Calls</div>
           <div className="text-4xl font-bold text-white mb-1">{totalCalls}</div>
           <div className="text-xs text-text-secondary">Analyzed</div>
         </div>
 
         {/* Average Risk */}
-        <div className="metric-card">
+        <div className="metric-card text-center">
           <div className="text-sm text-text-muted mb-2">Average Risk</div>
-          <div className="flex items-baseline gap-2">
+          <div className="flex items-baseline gap-2 justify-center">
             <div className="text-4xl font-bold text-white">{avgRisk.toFixed(1)}</div>
             <div className="text-xl text-text-muted">/10</div>
           </div>
-          <div className="flex items-center gap-2 mt-1">
+          <div className="flex items-center gap-2 mt-1 justify-center">
             <div className={`text-xs font-semibold ${
               avgRisk >= 7 ? 'text-risk-critical' :
               avgRisk >= 5 ? 'text-risk-high' :
@@ -76,9 +133,9 @@ export function PortfolioAnalytics({ files }: PortfolioAnalyticsProps) {
         </div>
 
         {/* High Risk Calls */}
-        <div className="metric-card">
+        <div className="metric-card text-center">
           <div className="text-sm text-text-muted mb-2">High Risk</div>
-          <div className="flex items-baseline gap-2">
+          <div className="flex items-baseline gap-2 justify-center">
             <div className="text-4xl font-bold text-risk-critical">{highRiskCalls}</div>
             <div className="text-xl text-text-muted">({highRiskPercentage.toFixed(0)}%)</div>
           </div>
@@ -89,50 +146,264 @@ export function PortfolioAnalytics({ files }: PortfolioAnalyticsProps) {
       {/* Trend Chart */}
       <div className="metric-card">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-white">📈 Risk Trend (Last 30 Days)</h3>
-          {avgRisk < 4.5 && (
+          <h3 className="text-lg font-semibold text-white">📈 Risk Trend (Last 8 Weeks)</h3>
+          {avgRisk < 4.5 && totalCalls > 0 && (
             <div className="text-xs text-risk-none bg-risk-none/20 px-3 py-1 rounded-full font-semibold">
-              ✅ Improving
+              ✅ Performing Well
             </div>
           )}
         </div>
         
-        <div className="relative h-40">
-          {/* Simple trend visualization */}
-          <div className="absolute inset-0 flex items-end justify-between gap-2">
-            {trendData.map((value, index) => {
-              const height = (value / 10) * 100;
-              return (
-                <div key={index} className="flex-1 flex flex-col items-center">
-                  <div
-                    className={`w-full rounded-t transition-all hover:opacity-80 ${
-                      value >= 7 ? 'bg-risk-critical' :
-                      value >= 5 ? 'bg-risk-high' :
-                      value >= 3 ? 'bg-risk-medium' :
-                      'bg-risk-none'
-                    }`}
-                    style={{ height: `${height}%` }}
-                  />
-                </div>
-              );
-            })}
+        {trendData.length > 0 ? (
+          <div className="relative h-64 pl-12">
+            {/* Y-axis labels - inside container now */}
+            <div className="absolute left-0 top-0 bottom-8 flex flex-col justify-between text-xs text-text-muted">
+              <div>{maxTrendValue}</div>
+              <div>{Math.round(maxTrendValue * 0.75)}</div>
+              <div>{Math.round(maxTrendValue * 0.5)}</div>
+              <div>{Math.round(maxTrendValue * 0.25)}</div>
+              <div>0</div>
+            </div>
+            
+            {/* Chart area */}
+            <div className="h-56 relative">
+              {/* Background grid lines */}
+              <div className="absolute inset-0 flex flex-col justify-between">
+                {[0, 1, 2, 3, 4].map(i => (
+                  <div key={i} className="border-t border-dark-border/30" />
+                ))}
+              </div>
+              
+              {/* Line chart - only lines and circles in SVG */}
+              <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                {/* Critical line */}
+                <polyline
+                  points={trendData.map((week, i) => {
+                    const x = (i / (trendData.length - 1)) * 100;
+                    const y = 100 - (week.critical / maxTrendValue) * 100;
+                    return `${x},${y}`;
+                  }).join(' ')}
+                  fill="none"
+                  stroke="rgb(239, 68, 68)"
+                  strokeWidth="0.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  opacity="0.9"
+                  vectorEffect="non-scaling-stroke"
+                />
+                {trendData.map((week, i) => (
+                  <circle
+                    key={`critical-${i}`}
+                    cx={(i / (trendData.length - 1)) * 100}
+                    cy={100 - (week.critical / maxTrendValue) * 100}
+                    r="1.2"
+                    fill="rgb(239, 68, 68)"
+                    stroke="rgb(30, 30, 36)"
+                    strokeWidth="0.3"
+                    className="cursor-pointer"
+                    vectorEffect="non-scaling-stroke"
+                  >
+                    <title>{`Week ${i + 1}: ${week.critical} critical calls`}</title>
+                  </circle>
+                ))}
+
+                {/* High line */}
+                <polyline
+                  points={trendData.map((week, i) => {
+                    const x = (i / (trendData.length - 1)) * 100;
+                    const y = 100 - (week.high / maxTrendValue) * 100;
+                    return `${x},${y}`;
+                  }).join(' ')}
+                  fill="none"
+                  stroke="rgb(249, 115, 22)"
+                  strokeWidth="0.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  opacity="0.9"
+                  vectorEffect="non-scaling-stroke"
+                />
+                {trendData.map((week, i) => (
+                  <circle
+                    key={`high-${i}`}
+                    cx={(i / (trendData.length - 1)) * 100}
+                    cy={100 - (week.high / maxTrendValue) * 100}
+                    r="1.2"
+                    fill="rgb(249, 115, 22)"
+                    stroke="rgb(30, 30, 36)"
+                    strokeWidth="0.3"
+                    className="cursor-pointer"
+                    vectorEffect="non-scaling-stroke"
+                  >
+                    <title>{`Week ${i + 1}: ${week.high} high risk calls`}</title>
+                  </circle>
+                ))}
+
+                {/* Medium line */}
+                <polyline
+                  points={trendData.map((week, i) => {
+                    const x = (i / (trendData.length - 1)) * 100;
+                    const y = 100 - (week.medium / maxTrendValue) * 100;
+                    return `${x},${y}`;
+                  }).join(' ')}
+                  fill="none"
+                  stroke="rgb(234, 179, 8)"
+                  strokeWidth="0.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  opacity="0.9"
+                  vectorEffect="non-scaling-stroke"
+                />
+                {trendData.map((week, i) => (
+                  <circle
+                    key={`medium-${i}`}
+                    cx={(i / (trendData.length - 1)) * 100}
+                    cy={100 - (week.medium / maxTrendValue) * 100}
+                    r="1.2"
+                    fill="rgb(234, 179, 8)"
+                    stroke="rgb(30, 30, 36)"
+                    strokeWidth="0.3"
+                    className="cursor-pointer"
+                    vectorEffect="non-scaling-stroke"
+                  >
+                    <title>{`Week ${i + 1}: ${week.medium} medium risk calls`}</title>
+                  </circle>
+                ))}
+
+                {/* Low line */}
+                <polyline
+                  points={trendData.map((week, i) => {
+                    const x = (i / (trendData.length - 1)) * 100;
+                    const y = 100 - (week.low / maxTrendValue) * 100;
+                    return `${x},${y}`;
+                  }).join(' ')}
+                  fill="none"
+                  stroke="rgb(34, 197, 94)"
+                  strokeWidth="0.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  opacity="0.9"
+                  vectorEffect="non-scaling-stroke"
+                />
+                {trendData.map((week, i) => (
+                  <circle
+                    key={`low-${i}`}
+                    cx={(i / (trendData.length - 1)) * 100}
+                    cy={100 - (week.low / maxTrendValue) * 100}
+                    r="1.2"
+                    fill="rgb(34, 197, 94)"
+                    stroke="rgb(30, 30, 36)"
+                    strokeWidth="0.3"
+                    className="cursor-pointer"
+                    vectorEffect="non-scaling-stroke"
+                  >
+                    <title>{`Week ${i + 1}: ${week.low} low risk calls`}</title>
+                  </circle>
+                ))}
+              </svg>
+              
+              {/* Fixed-size labels overlay */}
+              <div className="absolute inset-0 pointer-events-none">
+                {trendData.map((week, i) => {
+                  const xPercent = (i / (trendData.length - 1)) * 100;
+                  
+                  return (
+                    <React.Fragment key={`labels-${i}`}>
+                      {/* Critical label */}
+                      {week.critical > 0 && (
+                        <div
+                          className="absolute text-xs font-bold text-risk-critical"
+                          style={{
+                            left: `${xPercent}%`,
+                            top: `${100 - (week.critical / maxTrendValue) * 100}%`,
+                            transform: 'translate(-50%, -150%)'
+                          }}
+                        >
+                          {week.critical}
+                        </div>
+                      )}
+                      
+                      {/* High label */}
+                      {week.high > 0 && (
+                        <div
+                          className="absolute text-xs font-bold text-risk-high"
+                          style={{
+                            left: `${xPercent}%`,
+                            top: `${100 - (week.high / maxTrendValue) * 100}%`,
+                            transform: 'translate(-50%, -150%)'
+                          }}
+                        >
+                          {week.high}
+                        </div>
+                      )}
+                      
+                      {/* Medium label */}
+                      {week.medium > 0 && (
+                        <div
+                          className="absolute text-xs font-bold text-risk-medium"
+                          style={{
+                            left: `${xPercent}%`,
+                            top: `${100 - (week.medium / maxTrendValue) * 100}%`,
+                            transform: 'translate(-50%, -150%)'
+                          }}
+                        >
+                          {week.medium}
+                        </div>
+                      )}
+                      
+                      {/* Low label */}
+                      {week.low > 0 && (
+                        <div
+                          className="absolute text-xs font-bold text-risk-none"
+                          style={{
+                            left: `${xPercent}%`,
+                            top: `${100 - (week.low / maxTrendValue) * 100}%`,
+                            transform: 'translate(-50%, -150%)'
+                          }}
+                        >
+                          {week.low}
+                        </div>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+              </div>
+            </div>
+            
+            {/* X-axis labels */}
+            <div className="flex justify-between text-xs text-text-muted mt-2">
+              {trendData.map((_, index) => (
+                <span key={index} className="flex-1 text-center">W{index + 1}</span>
+              ))}
+            </div>
+
+            {/* Legend */}
+            <div className="flex flex-wrap gap-4 mt-4 justify-center">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-risk-critical" />
+                <span className="text-xs text-text-secondary">Critical (7-10)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-risk-high" />
+                <span className="text-xs text-text-secondary">High (5-6)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-risk-medium" />
+                <span className="text-xs text-text-secondary">Medium (3-4)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-risk-none" />
+                <span className="text-xs text-text-secondary">Low (0-2)</span>
+              </div>
+            </div>
           </div>
-          
-          {/* Y-axis labels */}
-          <div className="absolute left-0 top-0 bottom-0 flex flex-col justify-between text-xs text-text-muted -ml-8">
-            <div>10</div>
-            <div>5</div>
-            <div>0</div>
+        ) : (
+          <div className="h-48 flex items-center justify-center text-text-muted text-sm">
+            <div className="text-center">
+              <div className="text-4xl mb-2">📊</div>
+              <p>Upload more calls to see trends</p>
+            </div>
           </div>
-        </div>
-        
-        {/* X-axis labels */}
-        <div className="flex justify-between text-xs text-text-muted mt-2">
-          <span>Week 1</span>
-          <span>Week 2</span>
-          <span>Week 3</span>
-          <span>Week 4</span>
-        </div>
+        )}
       </div>
 
       {/* Risk Distribution & Recent Alerts */}
@@ -140,34 +411,73 @@ export function PortfolioAnalytics({ files }: PortfolioAnalyticsProps) {
         {/* Risk Distribution */}
         <div className="metric-card">
           <h3 className="text-lg font-semibold text-white mb-4">📊 Risk Distribution</h3>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-risk-critical" />
-                <span className="text-sm text-text-secondary">Critical (7-10)</span>
+          <div className="space-y-4">
+            {/* Critical */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-risk-critical" />
+                  <span className="text-sm text-text-secondary">Critical (7-10)</span>
+                </div>
+                <span className="text-sm font-semibold text-white">{riskDistribution.critical}</span>
               </div>
-              <span className="text-sm font-semibold text-white">{riskDistribution.critical}</span>
+              <div className="h-2 bg-dark-elevated rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-risk-critical rounded-full transition-all duration-500"
+                  style={{ width: totalCalls > 0 ? `${(riskDistribution.critical / totalCalls) * 100}%` : '0%' }}
+                />
+              </div>
             </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-risk-high" />
-                <span className="text-sm text-text-secondary">High (5-6)</span>
+
+            {/* High */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-risk-high" />
+                  <span className="text-sm text-text-secondary">High (5-6)</span>
+                </div>
+                <span className="text-sm font-semibold text-white">{riskDistribution.high}</span>
               </div>
-              <span className="text-sm font-semibold text-white">{riskDistribution.high}</span>
+              <div className="h-2 bg-dark-elevated rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-risk-high rounded-full transition-all duration-500"
+                  style={{ width: totalCalls > 0 ? `${(riskDistribution.high / totalCalls) * 100}%` : '0%' }}
+                />
+              </div>
             </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-risk-medium" />
-                <span className="text-sm text-text-secondary">Medium (3-4)</span>
+
+            {/* Medium */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-risk-medium" />
+                  <span className="text-sm text-text-secondary">Medium (3-4)</span>
+                </div>
+                <span className="text-sm font-semibold text-white">{riskDistribution.medium}</span>
               </div>
-              <span className="text-sm font-semibold text-white">{riskDistribution.medium}</span>
+              <div className="h-2 bg-dark-elevated rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-risk-medium rounded-full transition-all duration-500"
+                  style={{ width: totalCalls > 0 ? `${(riskDistribution.medium / totalCalls) * 100}%` : '0%' }}
+                />
+              </div>
             </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-risk-none" />
-                <span className="text-sm text-text-secondary">Low (0-2)</span>
+
+            {/* Low */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-risk-none" />
+                  <span className="text-sm text-text-secondary">Low (0-2)</span>
+                </div>
+                <span className="text-sm font-semibold text-white">{riskDistribution.low}</span>
               </div>
-              <span className="text-sm font-semibold text-white">{riskDistribution.low}</span>
+              <div className="h-2 bg-dark-elevated rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-risk-none rounded-full transition-all duration-500"
+                  style={{ width: totalCalls > 0 ? `${(riskDistribution.low / totalCalls) * 100}%` : '0%' }}
+                />
+              </div>
             </div>
           </div>
         </div>

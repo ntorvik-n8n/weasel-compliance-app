@@ -33,6 +33,36 @@ export function Dashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFile?.name, selectedFile?.uploadedAt]);
 
+  // Handler to download the call log JSON
+  const handleDownload = useCallback(() => {
+    if (!selectedFile || !state.selectedFileTranscript || !state.selectedFileAnalysis) return;
+
+    const callLogData = {
+      metadata: {
+        filename: selectedFile.name,
+        uploadedAt: selectedFile.uploadedAt,
+        callDuration: selectedFile.callDuration,
+      },
+      transcript: state.selectedFileTranscript,
+      analysis: state.selectedFileAnalysis,
+    };
+
+    const blob = new Blob([JSON.stringify(callLogData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = selectedFile.name;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }, [selectedFile, state.selectedFileTranscript, state.selectedFileAnalysis]);
+
+  // Handler to close the call and return to portfolio analytics
+  const handleClose = useCallback(() => {
+    actions.selectFile(null);
+  }, [actions]);
+
   // Show error state if there is an error and no data available
   if (state.error && !state.selectedFileTranscript && !state.selectedFileAnalysis) {
     return (
@@ -130,29 +160,54 @@ export function Dashboard() {
     <div className="flex-1 bg-dark-bg flex flex-col overflow-hidden">
       {/* Header */}
       <div className="bg-dark-surface border-b border-dark-border px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-bold text-white">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3 min-w-0 flex-1">
+            <h1 className="text-xl font-bold text-white truncate">
               📞 {selectedFile.name}
             </h1>
-            <p className="text-sm text-text-muted mt-1">
-              Uploaded {new Date(selectedFile.uploadedAt).toLocaleString()}
-            </p>
+            
+            {/* Download Button */}
+            <button
+              onClick={handleDownload}
+              className="flex-shrink-0 p-2 hover:bg-dark-elevated rounded-lg transition-colors group"
+              title="Download call log JSON"
+            >
+              <svg className="w-5 h-5 text-text-muted group-hover:text-badge-success transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+            </button>
           </div>
           
-          {/* Risk Badge */}
-          <div className={`px-4 py-2 rounded-lg font-bold text-sm uppercase ${
-            selectedFileAnalysis.riskScore >= 7 ? 'bg-risk-critical text-white' :
-            selectedFileAnalysis.riskScore >= 5 ? 'bg-risk-high text-white' :
-            selectedFileAnalysis.riskScore >= 3 ? 'bg-risk-medium text-white' :
-            'bg-risk-none text-white'
-          }`}>
-            {selectedFileAnalysis.riskScore >= 7 ? '🔴 CRITICAL RISK' :
-             selectedFileAnalysis.riskScore >= 5 ? '🟠 HIGH RISK' :
-             selectedFileAnalysis.riskScore >= 3 ? '🟡 MEDIUM RISK' :
-             '🟢 LOW RISK'}
+          <div className="flex items-center gap-3">
+            {/* Risk Badge */}
+            <div className={`px-4 py-2 rounded-lg font-bold text-sm uppercase whitespace-nowrap ${
+              selectedFileAnalysis.riskScore >= 7 ? 'bg-risk-critical text-white' :
+              selectedFileAnalysis.riskScore >= 5 ? 'bg-risk-high text-white' :
+              selectedFileAnalysis.riskScore >= 3 ? 'bg-risk-medium text-white' :
+              'bg-risk-none text-white'
+            }`}>
+              {selectedFileAnalysis.riskScore >= 7 ? '🔴 CRITICAL RISK' :
+               selectedFileAnalysis.riskScore >= 5 ? '🟠 HIGH RISK' :
+               selectedFileAnalysis.riskScore >= 3 ? '🟡 MEDIUM RISK' :
+               '🟢 LOW RISK'}
+            </div>
+
+            {/* Close Button */}
+            <button
+              onClick={handleClose}
+              className="flex-shrink-0 p-2 hover:bg-dark-elevated rounded-lg transition-colors group"
+              title="Return to Portfolio Analytics"
+            >
+              <svg className="w-5 h-5 text-text-muted group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
         </div>
+        
+        <p className="text-sm text-text-muted mt-2">
+          Uploaded {new Date(selectedFile.uploadedAt).toLocaleString()}
+        </p>
       </div>
 
       {/* Tabbed Content */}
