@@ -90,10 +90,10 @@ export function EnhancedFileList() {
     return sortedFiles.slice(start, start + pageSize);
   }, [sortedFiles, page, pageSize]);
 
-  const handleRowClick = (filename: string) => {
+  const handleRowClick = useCallback((filename: string) => {
     actions.selectFile(filename);
     router.push(`/calls/${encodeURIComponent(filename)}`);
-  };
+  }, [actions, router]);
 
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent) => {

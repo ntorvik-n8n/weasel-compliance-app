@@ -21,11 +21,12 @@ export default function CallLogDetailPage() {
   const decodedFilename = decodeURIComponent(filename as string);
 
   useEffect(() => {
-    actions.selectFile(decodedFilename);
-
     const fetchDetails = async () => {
       setLoading(true);
       try {
+        // Select the file in the manager
+        actions.selectFile(decodedFilename);
+
         // First fetch the file metadata to get uploadedAt
         const fileRes = await fetch(`/api/files/${filename}`);
 
@@ -60,7 +61,7 @@ export default function CallLogDetailPage() {
     };
 
     fetchDetails();
-  }, [filename, state.files]);
+  }, [filename, state.files, actions, decodedFilename]);
 
   const fileMetadata = state.files.find(f => f.name === decodedFilename);
 
