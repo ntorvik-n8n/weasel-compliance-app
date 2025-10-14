@@ -2,18 +2,22 @@
 
 import React, { useEffect, useCallback } from 'react';
 import { useFileManager } from '@/contexts/FileManagerContext';
-import { AnalysisSummaryCard } from './AnalysisSummaryCard';
+import { Tabs } from '@/components/ui/Tabs';
+import { PortfolioAnalytics } from './PortfolioAnalytics';
+import { OverviewTab } from './OverviewTab';
+import { TranscriptTab } from './TranscriptTab';
+import { ViolationsTab } from './ViolationsTab';
 
 /**
  * Main Dashboard Component
  *
  * Displays a comprehensive view of the selected call log with:
- * - Analysis summary card
- * - Violations list
- * - Interactive transcript
- * - Compliance trend charts
+ * - Portfolio analytics when no file selected
+ * - Tabbed interface for call details (Overview, Transcript, Violations)
+ * - Quick insights and recommendations
+ * - Risk timeline and comparison metrics
  *
- * Uses CSS Grid for responsive layout
+ * Uses modern dark theme and tabbed navigation
  */
 export function Dashboard() {
   const { selectedFile, state, actions } = useFileManager();
@@ -51,34 +55,11 @@ export function Dashboard() {
     );
   }
 
-  // Show empty state when no file is selected
+  // Show Portfolio Analytics when no file is selected
   if (!selectedFile) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-dark-bg p-8">
-        <div className="text-center max-w-md">
-          <div className="text-dark-text-muted mb-4">
-            <svg
-              className="mx-auto h-24 w-24"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              />
-            </svg>
-          </div>
-          <h3 className="text-lg font-medium text-dark-text-primary mb-2">
-            No Call Selected
-          </h3>
-          <p className="text-sm text-dark-text-secondary">
-            Select a call log from the list to view its analysis, transcript, and compliance details.
-          </p>
-        </div>
+      <div className="flex-1 bg-dark-bg overflow-auto dark-scrollbar">
+        <PortfolioAnalytics files={state.files} />
       </div>
     );
   }
@@ -97,143 +78,86 @@ export function Dashboard() {
     );
   }
 
+  // Show error if analysis failed to load
+  if (!selectedFileAnalysis) {
+    return (
+      <div className="flex-1 flex items-center justify-center bg-dark-bg p-8">
+        <div className="text-center max-w-md bg-dark-surface rounded-card p-8 border border-dark-border">
+          <h3 className="text-lg font-medium text-dark-text-primary mb-2">No Analysis Available</h3>
+          <p className="text-sm text-dark-text-secondary">
+            This call hasn't been analyzed yet or the analysis failed to load.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Define tabs
+  const tabs = [
+    {
+      id: 'overview',
+      label: 'Overview',
+      icon: (
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+      ),
+      content: <OverviewTab analysis={selectedFileAnalysis} metadata={selectedFile} />,
+    },
+    {
+      id: 'transcript',
+      label: 'Transcript',
+      icon: (
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+        </svg>
+      ),
+      content: <TranscriptTab transcript={selectedFileTranscript || []} />,
+    },
+    {
+      id: 'violations',
+      label: 'Violations',
+      icon: (
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+      ),
+      content: <ViolationsTab analysis={selectedFileAnalysis} />,
+    },
+  ];
+
   return (
-    <div className="flex-1 bg-dark-bg overflow-auto dark-scrollbar">
-      <div className="p-6">
-        {/* Dashboard Grid Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-          {/* Analysis Summary Card - Left column */}
-          <div className="lg:col-span-4">
-            {state.error && state.error.includes('analysis') ? (
-              <div className="metric-card bg-risk-critical/10">
-                <h2 className="text-xl font-bold mb-4 text-dark-text-primary">Analysis</h2>
-                <p className="text-sm text-dark-text-secondary">{state.error}</p>
-                <button 
-                  className="mt-4 px-4 py-2 bg-risk-critical text-white rounded-lg hover:bg-risk-critical/90 focus:outline-none focus:ring-2 focus:ring-risk-critical focus:ring-offset-2 focus:ring-offset-dark-bg transition-colors"
-                  onClick={() => {
-                    if (selectedFile) {
-                      actions.loadSelectedFileData(selectedFile.name, selectedFile.uploadedAt);
-                    }
-                  }}
-                >
-                  Retry Loading Analysis
-                </button>
-              </div>
-            ) : (
-              <AnalysisSummaryCard analysis={selectedFileAnalysis} fileMetadata={selectedFile} />
-            )}
+    <div className="flex-1 bg-dark-bg flex flex-col overflow-hidden">
+      {/* Header */}
+      <div className="bg-dark-surface border-b border-dark-border px-6 py-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-xl font-bold text-white">
+              📞 {selectedFile.name}
+            </h1>
+            <p className="text-sm text-text-muted mt-1">
+              Uploaded {new Date(selectedFile.uploadedAt).toLocaleString()}
+            </p>
           </div>
-
-          {/* Main Content Area - Right column */}
-          <div className="lg:col-span-8 space-y-6">
-
-            {/* Violations Section */}
-            {selectedFileAnalysis?.violations && selectedFileAnalysis.violations.length > 0 && (
-              <div className="metric-card">
-                <h2 className="text-xl font-bold mb-4 text-dark-text-primary">Compliance Flags</h2>
-                <div className="space-y-3">
-                  {selectedFileAnalysis.violations.map((violation, index) => (
-                    <div
-                      key={index}
-                      className={`p-4 rounded-lg border transition-all hover:shadow-md ${
-                        violation.severity === 'critical' || violation.severity === 'high'
-                          ? 'border-risk-critical/30 bg-risk-critical/5'
-                          : violation.severity === 'medium'
-                          ? 'border-risk-medium/30 bg-risk-medium/5'
-                          : 'border-badge-pressure/30 bg-badge-pressure/5'
-                      }`}
-                    >
-                      <div className="flex items-start justify-between mb-2">
-                        <span className={`text-sm font-semibold ${
-                          violation.severity === 'critical' || violation.severity === 'high'
-                            ? 'text-risk-critical'
-                            : violation.severity === 'medium'
-                            ? 'text-risk-medium'
-                            : 'text-badge-pressure'
-                        }`}>
-                          {violation.regulation || 'FDCPA Violation'}
-                        </span>
-                        <span className={`text-xs font-medium px-2.5 py-1 rounded-full uppercase ${
-                          violation.severity === 'critical' || violation.severity === 'high'
-                            ? 'bg-risk-critical/20 text-risk-critical border border-risk-critical/30'
-                            : violation.severity === 'medium'
-                            ? 'bg-risk-medium/20 text-risk-medium border border-risk-medium/30'
-                            : 'bg-badge-pressure/20 text-badge-pressure border border-badge-pressure/30'
-                        }`}>
-                          {violation.severity}
-                        </span>
-                      </div>
-
-                      {violation.quote && (
-                        <blockquote className="my-2 pl-3 border-l-2 border-dark-border text-sm italic text-dark-text-secondary">
-                          &quot;{violation.quote}&quot;
-                        </blockquote>
-                      )}
-
-                      <p className="text-sm text-dark-text-secondary mb-2">{violation.explanation}</p>
-
-                      {violation.suggestedAlternative && (
-                        <div className="mt-3 pt-3 border-t border-dark-border">
-                          <p className="text-xs font-medium text-compliance-pass mb-1">Suggested Alternative:</p>
-                          <p className="text-sm text-dark-text-secondary">{violation.suggestedAlternative}</p>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Transcript Section */}
-            <div className="metric-card">
-              <h2 className="text-xl font-bold mb-4 text-dark-text-primary">Call Transcript</h2>
-              {selectedFileTranscript && selectedFileTranscript.length > 0 ? (
-                <div className="space-y-3 max-h-[600px] overflow-y-auto dark-scrollbar pr-2">
-                  {selectedFileTranscript.map((turn, index) => (
-                    <div
-                      key={index}
-                      className="flex gap-3"
-                    >
-                      <div className={`flex-1 p-3 rounded-lg ${
-                        turn.speaker === 'agent' 
-                          ? 'bg-risk-critical/10 border border-risk-critical/20' 
-                          : 'bg-dark-elevated border border-dark-border'
-                      }`}>
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold uppercase ${
-                            turn.speaker === 'agent'
-                              ? 'bg-risk-critical/20 text-risk-critical'
-                              : 'bg-badge-success/20 text-badge-success border border-badge-success/30'
-                          }`}>
-                            {turn.speaker}
-                          </span>
-                          <span className="text-xs text-dark-text-muted">
-                            {typeof turn.timestamp === 'number'
-                              ? new Date(turn.timestamp * 1000).toISOString().substr(14, 5)
-                              : turn.timestamp}
-                          </span>
-                        </div>
-                        <p className="text-sm text-dark-text-primary leading-relaxed">{turn.text}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-sm text-dark-text-muted">No transcript data available</p>
-              )}
-            </div>
-
-            {/* Charts Placeholder for Story 4.4 */}
-            <div className="metric-card">
-              <h2 className="text-xl font-bold mb-4 text-dark-text-primary">Compliance Trends</h2>
-              <p className="text-sm text-dark-text-muted">
-                Trend charts will be implemented in Story 4.4
-              </p>
-            </div>
-
+          
+          {/* Risk Badge */}
+          <div className={`px-4 py-2 rounded-lg font-bold text-sm uppercase ${
+            selectedFileAnalysis.riskScore >= 7 ? 'bg-risk-critical text-white' :
+            selectedFileAnalysis.riskScore >= 5 ? 'bg-risk-high text-white' :
+            selectedFileAnalysis.riskScore >= 3 ? 'bg-risk-medium text-white' :
+            'bg-risk-none text-white'
+          }`}>
+            {selectedFileAnalysis.riskScore >= 7 ? '🔴 CRITICAL RISK' :
+             selectedFileAnalysis.riskScore >= 5 ? '🟠 HIGH RISK' :
+             selectedFileAnalysis.riskScore >= 3 ? '🟡 MEDIUM RISK' :
+             '🟢 LOW RISK'}
           </div>
         </div>
+      </div>
+
+      {/* Tabbed Content */}
+      <div className="flex-1 overflow-hidden">
+        <Tabs tabs={tabs} defaultTab="overview" />
       </div>
     </div>
   );
