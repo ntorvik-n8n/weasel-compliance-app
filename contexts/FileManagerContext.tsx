@@ -10,6 +10,7 @@ import type {
 } from '@/types/fileManagement';
 import type { TranscriptTurn } from '@/types/callLog';
 import type { AnalysisResult } from '@/types/analysis';
+import { clearFileListCache } from '@/hooks/use-file-list-loader';
 
 interface FileManagerProviderProps {
   children: ReactNode;
@@ -211,6 +212,9 @@ export function FileManagerProvider({ children }: FileManagerProviderProps) {
         // Remove file from local state immediately
         dispatch({ type: 'DELETE_FILE_SUCCESS', payload: file.name });
 
+        // Clear the file list cache since we've modified the file list
+        clearFileListCache();
+
         // Optionally try to call the API in the background (but don't fail if it errors)
         try {
           await fetch(`/api/files/${encodeURIComponent(file.name)}?uploadedAt=${file.uploadedAt.toISOString()}`, {
@@ -365,7 +369,8 @@ export function FileManagerProvider({ children }: FileManagerProviderProps) {
         });
       }
     },
-  }), [state.sortBy, state.sortDirection, state.files, state.selectedFile]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }), [state.sortBy, state.sortDirection]);
 
   const selectedFile = state.files.find(f => f.name === state.selectedFile) || null;
 

@@ -6,6 +6,7 @@ import type { FileUploadProps, UploadedFile } from './types';
 import { useUploadProgress } from '@/contexts/UploadProgressContext';
 import { useFileManager } from '@/contexts/FileManagerContext';
 import { uploadFileWithProgress } from '@/lib/uploadWithProgress';
+import { clearFileListCache } from '@/hooks/use-file-list-loader';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -32,6 +33,9 @@ export function FileUpload({
 
   const refreshFileList = useCallback(async () => {
     try {
+      // Clear the cache since we've uploaded a new file
+      clearFileListCache();
+      
       const response = await fetch('/api/files');
       if (response.ok) {
         const data = await response.json();
