@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useFileManager } from '@/contexts/FileManagerContext';
+import { FileMetadata } from '@/types/fileManagement';
 
 const CACHE_KEY = 'weasel-file-list-cache';
 const CACHE_TIMESTAMP_KEY = 'weasel-file-list-cache-timestamp';
@@ -36,7 +37,7 @@ export function useFileListLoader() {
               const parsedCache = JSON.parse(cachedData);
               
               // Restore Date objects from cached strings
-              const filesWithDates = parsedCache.map((file: any) => ({
+              const filesWithDates: FileMetadata[] = parsedCache.map((file: any) => ({
                 ...file,
                 uploadedAt: new Date(file.uploadedAt),
                 lastModified: new Date(file.lastModified),
@@ -70,7 +71,7 @@ export function useFileListLoader() {
 
         if (isMounted && data.success && data.files) {
           // Convert uploadedAt strings to Date objects
-          const filesWithDates = data.files.map((file: any) => ({
+          const filesWithDates: FileMetadata[] = data.files.map((file: any) => ({
             ...file,
             id: file.id || file.name,
             uploadedAt: new Date(file.uploadedAt),
